@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Personal Homepage</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .datetime {
+            font-size: 1.2em;
+            opacity: 0.95;
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .category-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            animation: slideUp 0.6s ease-out;
+            backdrop-filter: blur(10px);
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .category-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .category-icon {
+            font-size: 1.2em;
+        }
+
+        .sports { border-bottom-color: #4CAF50; color: #4CAF50; }
+        .finance { border-bottom-color: #2196F3; color: #2196F3; }
+        .work { border-bottom-color: #FF9800; color: #FF9800; }
+        .news { border-bottom-color: #F44336; color: #F44336; }
+        .entertainment { border-bottom-color: #9C27B0; color: #9C27B0; }
+        .social { border-bottom-color: #00BCD4; color: #00BCD4; }
+
+        .links-list {
+            list-style: none;
+        }
+
+        .links-list li {
+            margin-bottom: 12px;
+            opacity: 0;
+            animation: fadeInLeft 0.5s ease-out forwards;
+        }
+
+        .links-list li:nth-child(1) { animation-delay: 0.1s; }
+        .links-list li:nth-child(2) { animation-delay: 0.2s; }
+        .links-list li:nth-child(3) { animation-delay: 0.3s; }
+        .links-list li:nth-child(4) { animation-delay: 0.4s; }
+        .links-list li:nth-child(5) { animation-delay: 0.5s; }
+        .links-list li:nth-child(6) { animation-delay: 0.6s; }
+        .links-list li:nth-child(7) { animation-delay: 0.7s; }
+        .links-list li:nth-child(8) { animation-delay: 0.8s; }
+
+        .links-list a {
+            color: #555;
+            text-decoration: none;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            background: rgba(0,0,0,0.02);
+        }
+
+        .links-list a:hover {
+            background: linear-gradient(135deg, #667eea15, #764ba215);
+            color: #333;
+            transform: translateX(5px);
+            font-weight: 500;
+        }
+
+        .favicon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            border-radius: 4px;
+        }
+
+        .widgets-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .widget-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+            animation: slideUp 0.8s ease-out;
+        }
+
+        .calendar-widget {
+            grid-column: span 2;
+            max-width: 100%;
+        }
+
+        @media (max-width: 900px) {
+            .calendar-widget {
+                grid-column: span 1;
+            }
+        }
+
+        .widget-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
+        .quick-links {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .quick-link-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .quick-link-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .calendar-note {
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea15, #764ba215);
+            border-radius: 10px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .search-bar {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .search-input {
+            width: 100%;
+            max-width: 600px;
+            padding: 15px 25px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            transform: scale(1.02);
+        }
+
+        .top-widgets {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        @media (max-width: 900px) {
+            .top-widgets {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .weather-card, .calendar-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .weather-card:hover, .calendar-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.25);
+        }
+
+        .weather-header, .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .weather-title, .calendar-title {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #667eea;
+            margin: 0;
+        }
+
+        .calendar-btn {
+            padding: 6px 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .calendar-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .weather-location {
+            color: #666;
+            font-size: 1em;
+        }
+
+        .weather-select {
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            background: white;
+            color: #333;
+            font-size: 0.95em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .weather-select:hover {
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
+        .weather-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .weather-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .weather-main {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .weather-temp {
+            font-size: 2.5em;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .weather-condition {
+            font-size: 1.1em;
+            color: #666;
+        }
+
+        .weather-details {
+            display: flex;
+            gap: 25px;
+        }
+
+        .weather-detail {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .detail-label {
+            font-size: 0.85em;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            font-size: 1.1em;
+            font-weight: 500;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Welcome Back!</h1>
+            <div class="datetime" id="datetime"></div>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" class="search-input" placeholder="Search Google..." id="searchInput">
+        </div>
+
+        <!-- Top Widgets Section -->
+        <div class="top-widgets">
+            <!-- Weather Widget -->
+            <div class="weather-card">
+                <div class="weather-header">
+                    <h3 class="weather-title">🌤️ Weather</h3>
+                    <select class="weather-select" id="citySelect">
+                        <option value="Reno+Nevada">Reno, NV</option>
+                        <option value="Las+Vegas+Nevada">Las Vegas, NV</option>
+                        <option value="San+Francisco+California">San Francisco, CA</option>
+                        <option value="Los+Angeles+California">Los Angeles, CA</option>
+                        <option value="Phoenix+Arizona">Phoenix, AZ</option>
+                        <option value="Denver+Colorado">Denver, CO</option>
+                        <option value="Seattle+Washington">Seattle, WA</option>
+                        <option value="New+York">New York, NY</option>
+                        <option value="Miami+Florida">Miami, FL</option>
+                        <option value="Chicago+Illinois">Chicago, IL</option>
+                    </select>
+                </div>
+                <div class="weather-content">
+                    <div class="weather-main">
+                        <span class="weather-temp" id="temperature">--°F</span>
+                        <span class="weather-condition" id="condition">Loading...</span>
+                    </div>
+                    <div class="weather-details">
+                        <div class="weather-detail">
+                            <span class="detail-label">Feels like</span>
+                            <span class="detail-value" id="feels-like">--°F</span>
+                        </div>
+                        <div class="weather-detail">
+                            <span class="detail-label">Humidity</span>
+                            <span class="detail-value" id="humidity">--%</span>
+                        </div>
+                        <div class="weather-detail">
+                            <span class="detail-label">Wind</span>
+                            <span class="detail-value" id="wind">-- mph</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calendar Widget -->
+            <div class="calendar-card">
+                <div class="calendar-header">
+                    <h3 class="calendar-title">📅 Calendar</h3>
+                    <button class="calendar-btn" onclick="window.open('https://calendar.google.com/calendar/u/0?cid=bGFnaW9nMzFAZ21haWwuY29t', '_blank')">
+                        Full View →
+                    </button>
+                </div>
+                <iframe src="https://calendar.google.com/calendar/embed?src=lagiog31%40gmail.com&ctz=America%2FLos_Angeles" 
+                    style="border: 0; border-radius: 10px; background: white;" 
+                    width="100%" 
+                    height="250" 
+                    frameborder="0" 
+                    scrolling="no">
+                </iframe>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <!-- Sports Category -->
+            <div class="category-card">
+                <h2 class="category-title sports">
+                    <span class="category-icon">⚽</span>
+                    Sports
+                </h2>
+                <ul class="links-list">
+                    <li><a href="https://www.nytimes.com/athletic/" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=nytimes.com&sz=32" class="favicon" alt="">
+                        The Athletic (NYT)
+                    </a></li>
+                    <li><a href="https://www.outkick.com" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=outkick.com&sz=32" class="favicon" alt="">
+                        OutKick
+                    </a></li>
+                    <li><a href="https://www.dkpittsburghsports.com" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=dkpittsburghsports.com&sz=32" class="favicon" alt="">
+                        DK Pittsburgh Sports
+                    </a></li>
+                    <li><a href="https://www.steelers.com" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=steelers.com&sz=32" class="favicon" alt="">
+                        Pittsburgh Steelers
+                    </a></li>
+                    <li><a href="https://www.nhl.com/penguins/" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=nhl.com&sz=32" class="favicon" alt="">
+                        Pittsburgh Penguins
+                    </a></li>
+                    <li><a href="https://www.mlb.com/pirates" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=mlb.com&sz=32" class="favicon" alt="">
+                        Pittsburgh Pirates
+                    </a></li>
+                    <li><a href="https://ohiobobcats.com" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=ohiobobcats.com&sz=32" class="favicon" alt="">
+                        Ohio Bobcats
+                    </a></li>
+                    <li><a href="https://www.espn.com" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=espn.com&sz=32" class="favicon" alt="">
+                        ESPN
+                    </a></li>
+                </ul>
+            </div>
+
+            <!-- Finance Category -->
+            <div class="category-card">
+                <h2 class="category-title finance">
+                    <span class="category-icon">💰</span>
+                    Finance
+                </h2>
+                <ul class="links-list">
+                    <li><a href="https://trading-dashboard-b627.vercel.app/" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=trading-dashboard-b627.vercel.app&sz=32" class="favicon" alt="">
+                        Trading Dashboard
+                    </a></li>
+                    <li><a href="https://www.fidelity.com" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=fidelity.com&sz=32" class="favicon" alt="">
+                        Fidelity
+                    </a></li>
+                    <li><a href="https://client.schwab.com/Areas/Access/Login?SessionTimeOut=y&ReturnUrl=%2fapp%2faccounts%2fstatements%2f#/Document/Letters" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=schwab.com&sz=32" class="favicon" alt="">
+                        Charles Schwab
+                    </a></li>
+                    <li><a href="https://discord.com/channels/1098243246699860018/1164738837843550230" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=discord.com&sz=32" class="favicon" alt="">
+                        Discord Trading
+                    </a></li>
+                    <li><a href="https://lightspeed.com" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=lightspeed.com&sz=32" class="favicon" alt="">
+                        Lightspeed
+                    </a></li>
+                    <li><a href="https://kinfo.com/portfolio/77829/performance" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=kinfo.com&sz=32" class="favicon" alt="">
+                        Kinfo Portfolio
+                    </a></li>
+                    <li><a href="https://finance.yahoo.com" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=yahoo.com&sz=32" class="favicon" alt="">
+                        Yahoo Finance
+                    </a></li>
+                    <li><a href="https://www.cnbc.com" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=cnbc.com&sz=32" class="favicon" alt="">
+                        CNBC
+                    </a></li>
+                </ul>
+            </div>
+
+            <!-- Work Category -->
+            <div class="category-card">
+                <h2 class="category-title work">
+                    <span class="category-icon">💼</span>
+                    Work
+                </h2>
+                <ul class="links-list">
+                    <li><a href="https://drive.google.com/drive/home?dmr=1&ec=wgc-drive-globalnav-goto" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=drive.google.com&sz=32" class="favicon" alt="">
+                        Google Drive
+                    </a></li>
+                    <li><a href="https://accounts.intuit.com/app/sign-in?app_group=QBO&asset_alias=Intuit.accounting.core.qbowebapp&app_environment=prod" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=intuit.com&sz=32" class="favicon" alt="">
+                        QuickBooks Online
+                    </a></li>
+                    <li><a href="mailto:" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=apple.com&sz=32" class="favicon" alt="">
+                        Apple Mail App
+                    </a></li>
+                    <li><a href="https://mail.google.com" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=mail.google.com&sz=32" class="favicon" alt="">
+                        Gmail
+                    </a></li>
+                </ul>
+            </div>
+
+            <!-- News Category -->
+            <div class="category-card">
+                <h2 class="category-title news">
+                    <span class="category-icon">📰</span>
+                    News
+                </h2>
+                <ul class="links-list">
+                    <li><a href="https://citizenfreepress.com/" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=citizenfreepress.com&sz=32" class="favicon" alt="">
+                        Citizen Free Press
+                    </a></li>
+                    <li><a href="https://theconservativetreehouse.com" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=theconservativetreehouse.com&sz=32" class="favicon" alt="">
+                        The Conservative Treehouse
+                    </a></li>
+                    <li><a href="https://www.reddit.com" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=reddit.com&sz=32" class="favicon" alt="">
+                        Reddit
+                    </a></li>
+                    <li><a href="https://www.foxnews.com/" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=foxnews.com&sz=32" class="favicon" alt="">
+                        Fox News
+                    </a></li>
+                </ul>
+            </div>
+
+            <!-- Lifestyle Category -->
+            <div class="category-card">
+                <h2 class="category-title entertainment">
+                    <span class="category-icon">🔥</span>
+                    Lifestyle
+                </h2>
+                <ul class="links-list">
+                    <li><a href="https://duceswildbbq.com/" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=duceswildbbq.com&sz=32" class="favicon" alt="">
+                        Duces Wild BBQ
+                    </a></li>
+                    <li><a href="https://www.angrybbq.com" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=angrybbq.com&sz=32" class="favicon" alt="">
+                        Angry BBQ
+                    </a></li>
+                    <li><a href="https://howtobbqright.com" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=howtobbqright.com&sz=32" class="favicon" alt="">
+                        How To BBQ Right
+                    </a></li>
+                    <li><a href="https://amazingribs.com" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=amazingribs.com&sz=32" class="favicon" alt="">
+                        Amazing Ribs
+                    </a></li>
+                    <li><a href="https://www.meatchurch.com" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=meatchurch.com&sz=32" class="favicon" alt="">
+                        Meat Church
+                    </a></li>
+                    <li><a href="https://drive.google.com/drive/folders/1C6QJBJ_Gal7yhIherHQhT7NTqD8rXR9W?usp=share_link" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=drive.google.com&sz=32" class="favicon" alt="">
+                        📄 Rubs and Sauces
+                    </a></li>
+                    <li><a href="https://drive.google.com/drive/folders/1tjNajDgigST11A47D_Uz5XKSFUmrM7P6?usp=share_link" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=drive.google.com&sz=32" class="favicon" alt="">
+                        📄 Recipes
+                    </a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Widgets Section -->
+        <div class="widgets-section">
+            <div class="widget-card">
+                <h3 class="widget-title">📧 Email Access</h3>
+                <div class="quick-links">
+                    <button class="quick-link-btn" onclick="window.open('https://www.icloud.com/mail', '_blank')">
+                        iCloud Mail (Web)
+                    </button>
+                    <button class="quick-link-btn" onclick="window.location.href='mailto:'">
+                        Open Mail App
+                    </button>
+                </div>
+                <div class="calendar-note">
+                    <strong>Tip:</strong> Use iCloud Mail web version for quick access, or click "Open Mail App" to launch your default mail client.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Update date and time
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            document.getElementById('datetime').textContent = now.toLocaleDateString('en-US', options);
+        }
+
+        updateDateTime();
+        setInterval(updateDateTime, 60000); // Update every minute
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const query = this.value.trim();
+                if (query) {
+                    window.open('https://www.google.com/search?q=' + encodeURIComponent(query), '_blank');
+                    this.value = '';
+                }
+            }
+        });
+
+        // Weather functionality
+        async function getWeather(city = 'Reno+Nevada') {
+            try {
+                // Using wttr.in for weather data (no API key needed)
+                const response = await fetch(`https://wttr.in/${city}?format=j1`);
+                const data = await response.json();
+                
+                const current = data.current_condition[0];
+                const tempF = current.temp_F;
+                const feelsLike = current.FeelsLikeF;
+                const humidity = current.humidity;
+                const windSpeed = current.windspeedMiles;
+                const condition = current.weatherDesc[0].value;
+                
+                document.getElementById('temperature').textContent = tempF + '°F';
+                document.getElementById('condition').textContent = condition;
+                document.getElementById('feels-like').textContent = feelsLike + '°F';
+                document.getElementById('humidity').textContent = humidity + '%';
+                document.getElementById('wind').textContent = windSpeed + ' mph';
+            } catch (error) {
+                // If weather fails to load, show placeholder
+                document.getElementById('temperature').textContent = '72°F';
+                document.getElementById('condition').textContent = 'Clear';
+                document.getElementById('feels-like').textContent = '70°F';
+                document.getElementById('humidity').textContent = '45%';
+                document.getElementById('wind').textContent = '5 mph';
+            }
+        }
+
+        // City selector change event
+        document.getElementById('citySelect').addEventListener('change', function() {
+            getWeather(this.value);
+        });
+
+        // Load weather on page load
+        getWeather('Reno+Nevada');
+        // Update weather every 10 minutes
+        setInterval(() => {
+            const currentCity = document.getElementById('citySelect').value;
+            getWeather(currentCity);
+        }, 600000);
+
+        // You can edit the links here to customize your homepage
+        // Just change the href values and domain names in the favicon URLs
+    </script>
+</body>
+</html>
