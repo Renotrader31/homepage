@@ -784,34 +784,55 @@
                     'Thunder': '⛈️'
                 };
                 
-                // Get next 5 days
-                for (let i = 0; i < 5 && i < data.weather.length; i++) {
-                    const day = data.weather[i];
-                    const date = new Date(day.date);
-                    const dayName = i === 0 ? 'Today' : days[date.getDay()];
-                    const maxTemp = day.maxtempF;
-                    const minTemp = day.mintempF;
-                    const weatherDesc = day.hourly[4].weatherDesc[0].value; // Midday weather
-                    
-                    // Find matching icon
-                    let icon = '🌤️';
-                    for (const [key, value] of Object.entries(weatherIcons)) {
-                        if (weatherDesc.toLowerCase().includes(key.toLowerCase())) {
-                            icon = value;
-                            break;
-                        }
-                    }
-                    
+                // The API returns 3 days of weather data
+                // We'll show what's available and fill remaining spots
+                const availableDays = data.weather ? data.weather.length : 0;
+                
+                for (let i = 0; i < 5; i++) {
                     const forecastDay = document.createElement('div');
                     forecastDay.className = 'forecast-day';
-                    forecastDay.innerHTML = `
-                        <span class="forecast-date">${dayName}</span>
-                        <span class="forecast-icon">${icon}</span>
-                        <span class="forecast-temps">${maxTemp}°/${minTemp}°</span>
-                    `;
+                    
+                    if (i < availableDays) {
+                        // Use actual forecast data
+                        const day = data.weather[i];
+                        const date = new Date(day.date);
+                        const dayName = i === 0 ? 'Today' : i === 1 ? 'Tomorrow' : days[date.getDay()];
+                        const maxTemp = day.maxtempF;
+                        const minTemp = day.mintempF;
+                        const weatherDesc = day.hourly[4].weatherDesc[0].value; // Midday weather
+                        
+                        // Find matching icon
+                        let icon = '🌤️';
+                        for (const [key, value] of Object.entries(weatherIcons)) {
+                            if (weatherDesc.toLowerCase().includes(key.toLowerCase())) {
+                                icon = value;
+                                break;
+                            }
+                        }
+                        
+                        forecastDay.innerHTML = `
+                            <span class="forecast-date">${dayName}</span>
+                            <span class="forecast-icon">${icon}</span>
+                            <span class="forecast-temps">${maxTemp}°/${minTemp}°</span>
+                        `;
+                    } else {
+                        // For days beyond API data, show as unavailable
+                        const futureDate = new Date();
+                        futureDate.setDate(futureDate.getDate() + i);
+                        const dayName = days[futureDate.getDay()];
+                        
+                        forecastDay.innerHTML = `
+                            <span class="forecast-date">${dayName}</span>
+                            <span class="forecast-icon">-</span>
+                            <span class="forecast-temps">--°/--°</span>
+                        `;
+                        forecastDay.style.opacity = '0.5';
+                    }
+                    
                     forecastContainer.appendChild(forecastDay);
                 }
             } catch (error) {
+                console.error('Weather fetch error:', error);
                 // If weather fails to load, show placeholder
                 document.getElementById('temperature').textContent = '72°F';
                 document.getElementById('condition').textContent = 'Clear';
@@ -821,7 +842,7 @@
                 
                 // Show placeholder forecast
                 const forecastContainer = document.getElementById('forecast');
-                const placeholderDays = ['Today', 'Mon', 'Tue', 'Wed', 'Thu'];
+                const placeholderDays = ['Today', 'Tomorrow', 'Wed', 'Thu', 'Fri'];
                 forecastContainer.innerHTML = '';
                 placeholderDays.forEach(day => {
                     const forecastDay = document.createElement('div');
