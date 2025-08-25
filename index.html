@@ -214,6 +214,79 @@
             color: #e0e0e0;
         }
 
+        .weather-forecast {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            padding: 20px 0;
+            margin: 20px 0;
+            border-top: 2px solid rgba(102, 126, 234, 0.1);
+            border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+        }
+
+        @media (max-width: 600px) {
+            .weather-forecast {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .forecast-day {
+            text-align: center;
+            padding: 15px 5px;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .forecast-day {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .forecast-day:hover {
+            background: rgba(102, 126, 234, 0.15);
+            transform: translateY(-3px);
+        }
+
+        .forecast-date {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        body.dark-mode .forecast-date {
+            color: #999;
+        }
+
+        .forecast-icon {
+            font-size: 2em;
+            margin: 10px 0;
+        }
+
+        .forecast-temps {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.95em;
+        }
+
+        .forecast-high {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .forecast-low {
+            color: #888;
+        }
+
+        body.dark-mode .forecast-high {
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .forecast-low {
+            color: #999;
+        }
+
         .world-clocks {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -484,6 +557,48 @@
                     <div class="weather-detail">
                         <div class="detail-label">Wind</div>
                         <div class="detail-value" id="wind">-- mph</div>
+                    </div>
+                </div>
+                <div class="weather-forecast" id="forecast">
+                    <div class="forecast-day">
+                        <div class="forecast-date">Today</div>
+                        <div class="forecast-icon">☀️</div>
+                        <div class="forecast-temps">
+                            <span class="forecast-high">--°</span>
+                            <span class="forecast-low">--°</span>
+                        </div>
+                    </div>
+                    <div class="forecast-day">
+                        <div class="forecast-date">Tomorrow</div>
+                        <div class="forecast-icon">☀️</div>
+                        <div class="forecast-temps">
+                            <span class="forecast-high">--°</span>
+                            <span class="forecast-low">--°</span>
+                        </div>
+                    </div>
+                    <div class="forecast-day">
+                        <div class="forecast-date">Day 3</div>
+                        <div class="forecast-icon">☀️</div>
+                        <div class="forecast-temps">
+                            <span class="forecast-high">--°</span>
+                            <span class="forecast-low">--°</span>
+                        </div>
+                    </div>
+                    <div class="forecast-day">
+                        <div class="forecast-date">Day 4</div>
+                        <div class="forecast-icon">☀️</div>
+                        <div class="forecast-temps">
+                            <span class="forecast-high">--°</span>
+                            <span class="forecast-low">--°</span>
+                        </div>
+                    </div>
+                    <div class="forecast-day">
+                        <div class="forecast-date">Day 5</div>
+                        <div class="forecast-icon">☀️</div>
+                        <div class="forecast-temps">
+                            <span class="forecast-high">--°</span>
+                            <span class="forecast-low">--°</span>
+                        </div>
                     </div>
                 </div>
                 <div class="world-clocks">
@@ -805,6 +920,7 @@
                 if (response.ok) {
                     const data = await response.json();
                     const current = data.current_condition[0];
+                    const weather = data.weather; // Array of daily forecasts
                     
                     // Convert Celsius to Fahrenheit
                     const tempF = Math.round((parseInt(current.temp_C) * 9/5) + 32);
@@ -815,6 +931,11 @@
                     document.getElementById('feels-like').textContent = feelsLikeF + '°F';
                     document.getElementById('humidity').textContent = current.humidity + '%';
                     document.getElementById('wind').textContent = Math.round(parseInt(current.windspeedMiles)) + ' mph';
+                    
+                    // Update forecast
+                    if (weather && weather.length > 0) {
+                        updateForecast(weather);
+                    }
                 } else {
                     // Use static fallback
                     setStaticWeather(city);
@@ -823,6 +944,42 @@
                 console.error('Weather error:', error);
                 setStaticWeather(city);
             }
+        }
+
+        function updateForecast(weatherData) {
+            const forecastDays = document.querySelectorAll('.forecast-day');
+            const dayNames = ['Today', 'Tomorrow', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            
+            weatherData.slice(0, 5).forEach((day, index) => {
+                if (forecastDays[index]) {
+                    // Convert temps to Fahrenheit
+                    const maxTempF = Math.round((parseInt(day.maxtempC) * 9/5) + 32);
+                    const minTempF = Math.round((parseInt(day.mintempC) * 9/5) + 32);
+                    
+                    // Get day name
+                    let dayName = dayNames[index] || 'Day ' + (index + 1);
+                    if (index > 1) {
+                        const date = new Date(day.date);
+                        dayName = dayNames[date.getDay() + 2] || dayNames[date.getDay()];
+                    }
+                    
+                    // Get weather icon based on description
+                    const desc = day.hourly[4].weatherDesc[0].value.toLowerCase(); // Use noon weather
+                    let icon = '☀️';
+                    if (desc.includes('rain') || desc.includes('shower')) icon = '🌧️';
+                    else if (desc.includes('cloud')) icon = '☁️';
+                    else if (desc.includes('partly')) icon = '⛅';
+                    else if (desc.includes('snow')) icon = '❄️';
+                    else if (desc.includes('thunder')) icon = '⛈️';
+                    else if (desc.includes('fog') || desc.includes('mist')) icon = '🌫️';
+                    
+                    // Update the forecast day
+                    forecastDays[index].querySelector('.forecast-date').textContent = dayName;
+                    forecastDays[index].querySelector('.forecast-icon').textContent = icon;
+                    forecastDays[index].querySelector('.forecast-high').textContent = maxTempF + '°';
+                    forecastDays[index].querySelector('.forecast-low').textContent = minTempF + '°';
+                }
+            });
         }
 
         function setStaticWeather(city) {
@@ -840,6 +997,25 @@
             document.getElementById('feels-like').textContent = data.feels + '°F';
             document.getElementById('humidity').textContent = data.humidity + '%';
             document.getElementById('wind').textContent = data.wind + ' mph';
+            
+            // Set static forecast
+            const forecastDays = document.querySelectorAll('.forecast-day');
+            const staticForecasts = [
+                { day: 'Today', icon: '☀️', high: data.temp + 2, low: data.temp - 10 },
+                { day: 'Tomorrow', icon: '⛅', high: data.temp + 3, low: data.temp - 8 },
+                { day: 'Monday', icon: '☁️', high: data.temp + 1, low: data.temp - 12 },
+                { day: 'Tuesday', icon: '🌧️', high: data.temp - 2, low: data.temp - 15 },
+                { day: 'Wednesday', icon: '☀️', high: data.temp + 5, low: data.temp - 7 }
+            ];
+            
+            forecastDays.forEach((dayEl, index) => {
+                if (staticForecasts[index]) {
+                    dayEl.querySelector('.forecast-date').textContent = staticForecasts[index].day;
+                    dayEl.querySelector('.forecast-icon').textContent = staticForecasts[index].icon;
+                    dayEl.querySelector('.forecast-high').textContent = staticForecasts[index].high + '°';
+                    dayEl.querySelector('.forecast-low').textContent = staticForecasts[index].low + '°';
+                }
+            });
         }
 
         // City selector
