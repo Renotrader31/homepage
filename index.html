@@ -135,9 +135,21 @@
 
         .widgets-section {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 25px;
             margin-top: 30px;
+        }
+
+        @media (max-width: 1200px) {
+            .widgets-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .widgets-section {
+                grid-template-columns: 1fr;
+            }
         }
 
         .widget-card {
@@ -147,6 +159,9 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             backdrop-filter: blur(10px);
             animation: slideUp 0.8s ease-out;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
         .calendar-widget {
@@ -158,6 +173,67 @@
             .calendar-widget {
                 grid-column: span 1;
             }
+        }
+
+        /* World clocks in weather widget */
+        .world-clocks-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .clocks-header {
+            font-size: 1em;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .clocks-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .clocks-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .clock-item.compact {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 5px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.08), rgba(118, 75, 162, 0.08));
+            border-radius: 10px;
+        }
+
+        .clock-item.compact .clock-city {
+            font-size: 0.75em;
+            color: #666;
+            margin-bottom: 3px;
+        }
+
+        .clock-item.compact .clock-time {
+            font-size: 1em;
+            font-weight: 600;
+            color: #333;
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+        }
+
+        body.dark-mode .clock-item.compact .clock-time {
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .clock-item.compact .clock-city {
+            color: #999;
+        }
+
+        body.dark-mode .clocks-header {
+            color: #9bb5ff;
         }
 
         .widget-title {
@@ -353,6 +429,7 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
+            flex-grow: 1;
         }
 
         .team-score {
@@ -392,41 +469,10 @@
             color: #666;
         }
 
-        /* World clocks styles */
-        .clocks-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-
-        .clock-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 15px;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.08), rgba(118, 75, 162, 0.08));
-            border-radius: 10px;
-        }
-
-        .clock-city {
-            font-size: 0.9em;
-            color: #666;
-            margin-bottom: 5px;
-        }
-
-        .clock-time {
-            font-size: 1.3em;
-            font-weight: 600;
-            color: #333;
-            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
-        }
-
-        body.dark-mode .clock-time,
         body.dark-mode .team-name {
             color: #e0e0e0;
         }
 
-        body.dark-mode .clock-city,
         body.dark-mode .team-record {
             color: #999;
         }
@@ -734,6 +780,27 @@
                         <span class="forecast-low">--°</span>
                     </div>
                 </div>
+                <div class="world-clocks-section">
+                    <div class="clocks-header">🌍 World Clocks</div>
+                    <div class="clocks-grid">
+                        <div class="clock-item compact">
+                            <span class="clock-city">Reno</span>
+                            <span class="clock-time" id="clockReno">--:--</span>
+                        </div>
+                        <div class="clock-item compact">
+                            <span class="clock-city">Pittsburgh</span>
+                            <span class="clock-time" id="clockPittsburgh">--:--</span>
+                        </div>
+                        <div class="clock-item compact">
+                            <span class="clock-city">Alexandria</span>
+                            <span class="clock-time" id="clockAlexandria">--:--</span>
+                        </div>
+                        <div class="clock-item compact">
+                            <span class="clock-city">San Francisco</span>
+                            <span class="clock-time" id="clockSF">--:--</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Calendar Widget -->
@@ -988,28 +1055,6 @@
                 <button class="quick-link-btn" style="margin-top: 15px; width: 100%;" onclick="window.open('https://www.espn.com/nfl/team/_/name/pit/pittsburgh-steelers', '_blank')">
                     View Full Scores on ESPN
                 </button>
-            </div>
-
-            <div class="widget-card">
-                <h3 class="widget-title">🌍 World Clocks</h3>
-                <div class="clocks-container">
-                    <div class="clock-item">
-                        <span class="clock-city">Reno</span>
-                        <span class="clock-time" id="clockReno">--:--</span>
-                    </div>
-                    <div class="clock-item">
-                        <span class="clock-city">Pittsburgh</span>
-                        <span class="clock-time" id="clockPittsburgh">--:--</span>
-                    </div>
-                    <div class="clock-item">
-                        <span class="clock-city">Alexandria</span>
-                        <span class="clock-time" id="clockAlexandria">--:--</span>
-                    </div>
-                    <div class="clock-item">
-                        <span class="clock-city">San Francisco</span>
-                        <span class="clock-time" id="clockSF">--:--</span>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
