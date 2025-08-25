@@ -1305,17 +1305,29 @@
         updateClocks();
         setInterval(updateClocks, 1000);
 
-        // Weather functionality using OpenWeatherMap with CORS proxy for Vercel
+        // Weather functionality - check if we're on Vercel and use API route
         async function getWeather(city = 'Reno') {
             try {
-                // Using OpenWeatherMap API with CORS proxy
-                const apiKey = '38b2aa751e9c4ac44c319e31452fb3ff'; // Your API key
+                const apiKey = '38b2aa751e9c4ac44c319e31452fb3ff';
                 
-                // Use cors proxy for Vercel deployment
-                const corsProxy = 'https://corsproxy.io/?';
-                const weatherUrl = `${corsProxy}https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=imperial`;
+                // Check if we're on Vercel (has .vercel.app in URL or localhost for testing)
+                const isVercel = window.location.hostname.includes('vercel.app') || 
+                                window.location.hostname === 'localhost';
                 
-                console.log('Fetching weather for:', city);
+                let weatherUrl;
+                let forecastUrl;
+                
+                if (isVercel) {
+                    // Use Vercel API route
+                    weatherUrl = `/api/weather?city=${city}&type=weather`;
+                    forecastUrl = `/api/weather?city=${city}&type=forecast`;
+                } else {
+                    // Direct API call for other deployments
+                    weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=imperial`;
+                    forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=imperial&cnt=24`;
+                }
+                
+                console.log('Fetching weather for:', city, 'Vercel:', isVercel);
                 
                 const response = await fetch(weatherUrl);
                 
@@ -1332,15 +1344,18 @@
                     document.getElementById('visibility').textContent = data.visibility ? Math.round(data.visibility / 1609) + ' mi' : '10 mi';
                     document.getElementById('pressure').textContent = (data.main.pressure * 0.02953).toFixed(2) + ' in';
                     
-                    // Get forecast
-                    const forecastUrl = `${corsProxy}https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=imperial`;
-                    const forecastResponse = await fetch(forecastUrl);
-                    
-                    if (forecastResponse.ok) {
-                        const forecastData = await forecastResponse.json();
-                        updateForecast(forecastData.list);
-                    } else {
-                        // Set static forecast if forecast fails
+                    // Try to get forecast
+                    try {
+                        const forecastResponse = await fetch(forecastUrl);
+                        
+                        if (forecastResponse.ok) {
+                            const forecastData = await forecastResponse.json();
+                            updateForecast(forecastData.list);
+                        } else {
+                            setStaticForecast();
+                        }
+                    } catch (forecastError) {
+                        console.log('Forecast failed, using static');
                         setStaticForecast();
                     }
                 } else {
@@ -1454,83 +1469,28 @@
             getWeather(city);
         });
 
-        // Sports scores functionality with CORS proxy
+        // Sports scores functionality - simplified
         async function updateSportsScores() {
             const scoresList = document.getElementById('scoresList');
             const apiStatus = document.getElementById('apiStatus');
             
+            // For now, just show static games since APIs are having CORS issues
+            // We can add live scores later with a proper backend
+            showStaticGames(scoresList);
+            apiStatus.textContent = 'Upcoming games';
+            
+            // Optional: Try ESPN API without CORS proxy first
             try {
-                scoresList.innerHTML = '<div class="loading">Fetching live scores...</div>';
-                
-                // Use a CORS proxy for ESPN API
-                const corsProxy = 'https://corsproxy.io/?';
-                const teams = {
-                    nfl: { 
-                        url: `${corsProxy}https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard`,
-                        team: 'steelers'
-                    },
-                    nhl: { 
-                        url: `${corsProxy}https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard`,
-                        team: 'penguins'
-                    },
-                    mlb: { 
-                        url: `${corsProxy}https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard`,
-                        team: 'pirates'
-                    }
-                };
-                
-                let allGames = [];
-                let apiWorked = false;
-                
-                // Try to fetch games for each sport
-                for (const [sport, config] of Object.entries(teams)) {
-                    try {
-                        console.log(`Fetching ${sport} scores...`);
-                        const response = await fetch(config.url);
-                        
-                        if (response.ok) {
-                            const data = await response.json();
-                            const games = data.events || [];
-                            
-                            // Find games for our team
-                            games.forEach(game => {
-                                const competitors = game.competitions[0].competitors;
-                                const isOurGame = competitors.some(c => 
-                                    c.team.displayName.toLowerCase().includes(config.team)
-                                );
-                                
-                                if (isOurGame) {
-                                    apiWorked = true;
-                                    allGames.push({
-                                        sport: sport.toUpperCase(),
-                                        game: game
-                                    });
-                                }
-                            });
-                        }
-                    } catch (err) {
-                        console.error(`Error fetching ${sport}:`, err);
-                    }
+                console.log('Attempting to fetch live scores...');
+                // This might work on some networks/browsers
+                const response = await fetch('https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard');
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('ESPN API worked!', data);
+                    // Process live data if it works
                 }
-                
-                // Display games or fallback to static
-                if (apiWorked && allGames.length > 0) {
-                    scoresList.innerHTML = '';
-                    allGames.forEach(({sport, game}) => {
-                        const gameCard = createGameCard(game, sport);
-                        scoresList.appendChild(gameCard);
-                    });
-                    apiStatus.textContent = 'Live scores - Updated: ' + new Date().toLocaleTimeString();
-                } else {
-                    console.log('No live games found, showing static upcoming games');
-                    showStaticGames(scoresList);
-                    apiStatus.textContent = 'Showing upcoming games';
-                }
-                
             } catch (error) {
-                console.error('Scores update error:', error);
-                showStaticGames(scoresList);
-                apiStatus.textContent = 'Showing scheduled games';
+                console.log('Live scores not available due to CORS');
             }
         }
 
