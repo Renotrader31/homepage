@@ -1293,7 +1293,7 @@
             }, 500);
         });
 
-        // theScore Live Updates
+        // theScore Live Updates using TheSportsDB
         async function updateSportsScores() {
             const gamesContainer = document.querySelector('.games-list');
             if (!gamesContainer) return;
@@ -1302,155 +1302,81 @@
             let allGames = [];
 
             try {
-                // Get current date info
-                const now = new Date();
-                const today = now.toISOString().split('T')[0];
+                // TheSportsDB API endpoints (free tier)
+                const baseURL = 'https://www.thesportsdb.com/api/v1/json/3';
                 
-                // NHL API for Penguins
-                try {
-                    const nhlResponse = await fetch(`https://api-web.nhle.com/v1/club-schedule-season/PIT/now`);
-                    if (nhlResponse.ok) {
-                        const nhlData = await nhlResponse.json();
-                        const games = nhlData.games || [];
-                        
-                        // Get next game or recent game
-                        const recentGames = games.slice(-1); // Last game
-                        const upcomingGames = games.filter(g => new Date(g.gameDate) >= now).slice(0, 1);
-                        const penguinsGames = [...recentGames, ...upcomingGames];
-                        
-                        penguinsGames.forEach(game => {
-                            const gameDate = new Date(game.gameDate);
-                            const isHome = game.homeTeam.abbrev === 'PIT';
-                            const opponent = isHome ? game.awayTeam.abbrev : game.homeTeam.abbrev;
-                            let status = 'Scheduled';
-                            let homeScore = '--';
-                            let awayScore = '--';
-                            
-                            if (game.gameState === 'FUT' || game.gameState === 'PRE') {
-                                status = gameDate.toLocaleDateString('en-US', { weekday: 'short', month: 'numeric', day: 'numeric' }) + 
-                                        ' @ ' + gameDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-                            } else if (game.gameState === 'LIVE' || game.gameState === 'CRIT') {
-                                status = `LIVE - Period ${game.period || ''}`;
-                                homeScore = String(game.homeTeam.score || 0);
-                                awayScore = String(game.awayTeam.score || 0);
-                            } else if (game.gameState === 'FINAL' || game.gameState === 'OFF') {
-                                status = 'Final';
-                                homeScore = String(game.homeTeam.score || 0);
-                                awayScore = String(game.awayTeam.score || 0);
-                            }
-                            
-                            allGames.push({
-                                sport: 'NHL',
-                                date: gameDate,
-                                status: status,
-                                team1: isHome ? 'PIT' : opponent,
-                                team2: isHome ? opponent : 'PIT',
-                                score1: isHome ? homeScore : awayScore,
-                                score2: isHome ? awayScore : homeScore,
-                                isWinner1: parseInt(homeScore) > parseInt(awayScore) && isHome,
-                                isWinner2: parseInt(awayScore) > parseInt(homeScore) && !isHome
-                            });
-                        });
-                    }
-                } catch (nhlError) {
-                    console.log('NHL API error:', nhlError);
-                }
+                // Team IDs in TheSportsDB
+                const teams = {
+                    steelers: '134920',  // Pittsburgh Steelers
+                    penguins: '134844',  // Pittsburgh Penguins  
+                    pirates: '135269',   // Pittsburgh Pirates
+                    chelsea: '133610'    // Chelsea FC
+                };
 
-                // ESPN API for Steelers
-                try {
-                    const nflResponse = await fetch(`https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/23/schedule`);
-                    if (nflResponse.ok) {
-                        const nflData = await nflResponse.json();
-                        const events = nflData.events || [];
-                        const recentAndUpcoming = events.filter(e => {
-                            const eventDate = new Date(e.date);
-                            const daysDiff = Math.abs(eventDate - now) / (1000 * 60 * 60 * 24);
-                            return daysDiff <= 14; // Games within 2 weeks
-                        }).slice(0, 2);
-
-                        recentAndUpcoming.forEach(event => {
-                            const gameDate = new Date(event.date);
-                            const competition = event.competitions[0];
-                            const isHome = competition.competitors.find(c => c.homeAway === 'home').team.abbreviation === 'PIT';
-                            const homeTeam = competition.competitors.find(c => c.homeAway === 'home');
-                            const awayTeam = competition.competitors.find(c => c.homeAway === 'away');
-                            
-                            let status = competition.status.type.description;
-                            if (status === 'Scheduled') {
-                                status = gameDate.toLocaleDateString('en-US', { weekday: 'short', month: 'numeric', day: 'numeric' }) + 
-                                        ' @ ' + gameDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-                            }
-                            
-                            // Make sure scores are strings, not objects
-                            const awayScore = awayTeam.score ? String(awayTeam.score) : '--';
-                            const homeScore = homeTeam.score ? String(homeTeam.score) : '--';
-                            
-                            allGames.push({
-                                sport: 'NFL',
-                                date: gameDate,
-                                status: status,
-                                team1: awayTeam.team.abbreviation,
-                                team2: homeTeam.team.abbreviation,
-                                score1: awayScore,
-                                score2: homeScore,
-                                isWinner1: awayTeam.winner === true,
-                                isWinner2: homeTeam.winner === true
-                            });
-                        });
-                    }
-                } catch (nflError) {
-                    console.log('NFL API error:', nflError);
-                }
-
-                // ESPN API for Pirates (when in season)
-                const currentMonth = now.getMonth();
-                if (currentMonth >= 3 && currentMonth <= 9) { // Baseball season April-October
+                // Get next and last games for each team
+                for (const [teamName, teamId] of Object.entries(teams)) {
                     try {
-                        const mlbResponse = await fetch(`https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/teams/23/schedule`);
-                        if (mlbResponse.ok) {
-                            const mlbData = await mlbResponse.json();
-                            const events = mlbData.events || [];
-                            const recentGame = events.filter(e => new Date(e.date) <= now).slice(-1);
-                            
-                            recentGame.forEach(event => {
-                                const gameDate = new Date(event.date);
-                                const competition = event.competitions[0];
-                                const homeTeam = competition.competitors.find(c => c.homeAway === 'home');
-                                const awayTeam = competition.competitors.find(c => c.homeAway === 'away');
-                                
-                                const awayScore = awayTeam.score ? String(awayTeam.score) : '--';
-                                const homeScore = homeTeam.score ? String(homeTeam.score) : '--';
-                                
-                                allGames.push({
-                                    sport: 'MLB',
-                                    date: gameDate,
-                                    status: competition.status.type.description,
-                                    team1: awayTeam.team.abbreviation,
-                                    team2: homeTeam.team.abbreviation,
-                                    score1: awayScore,
-                                    score2: homeScore,
-                                    isWinner1: awayTeam.winner === true,
-                                    isWinner2: homeTeam.winner === true
-                                });
-                            });
+                        // Get last 5 events
+                        const lastEventsResponse = await fetch(`${baseURL}/eventslast.php?id=${teamId}`);
+                        if (lastEventsResponse.ok) {
+                            const lastData = await lastEventsResponse.json();
+                            if (lastData.results) {
+                                // Get the most recent game
+                                const lastGame = lastData.results[0];
+                                if (lastGame) {
+                                    const gameDate = new Date(lastGame.dateEvent + ' ' + (lastGame.strTime || '00:00'));
+                                    const homeScore = lastGame.intHomeScore !== null ? lastGame.intHomeScore : '--';
+                                    const awayScore = lastGame.intAwayScore !== null ? lastGame.intAwayScore : '--';
+                                    
+                                    allGames.push({
+                                        sport: lastGame.strSport,
+                                        date: gameDate,
+                                        status: 'Final',
+                                        team1: lastGame.strAwayTeam,
+                                        team2: lastGame.strHomeTeam,
+                                        score1: String(awayScore),
+                                        score2: String(homeScore),
+                                        isWinner1: awayScore !== '--' && parseInt(awayScore) > parseInt(homeScore),
+                                        isWinner2: homeScore !== '--' && parseInt(homeScore) > parseInt(awayScore)
+                                    });
+                                }
+                            }
                         }
-                    } catch (mlbError) {
-                        console.log('MLB API error:', mlbError);
+
+                        // Get next 5 events
+                        const nextEventsResponse = await fetch(`${baseURL}/eventsnext.php?id=${teamId}`);
+                        if (nextEventsResponse.ok) {
+                            const nextData = await nextEventsResponse.json();
+                            if (nextData.events) {
+                                // Get the next game
+                                const nextGame = nextData.events[0];
+                                if (nextGame) {
+                                    const gameDate = new Date(nextGame.dateEvent + ' ' + (nextGame.strTime || '00:00'));
+                                    const dateStr = gameDate.toLocaleDateString('en-US', { 
+                                        weekday: 'short', 
+                                        month: 'numeric', 
+                                        day: 'numeric' 
+                                    });
+                                    const timeStr = nextGame.strTime || 'TBD';
+                                    
+                                    allGames.push({
+                                        sport: nextGame.strSport,
+                                        date: gameDate,
+                                        status: `${dateStr} @ ${timeStr}`,
+                                        team1: nextGame.strAwayTeam,
+                                        team2: nextGame.strHomeTeam,
+                                        score1: '--',
+                                        score2: '--',
+                                        isWinner1: false,
+                                        isWinner2: false
+                                    });
+                                }
+                            }
+                        }
+                    } catch (teamError) {
+                        console.log(`Error fetching ${teamName}:`, teamError);
                     }
                 }
-
-                // Add Chelsea games (using static data for now - Premier League API requires key)
-                allGames.push({
-                    sport: 'EPL',
-                    date: new Date('2025-01-04T15:00:00'),
-                    status: 'Sat 1/4 @ 10:00 AM',
-                    team1: 'CHE',
-                    team2: 'CRY',
-                    score1: '--',
-                    score2: '--',
-                    isWinner1: false,
-                    isWinner2: false
-                });
 
                 // Sort games by date
                 allGames.sort((a, b) => a.date - b.date);
@@ -1458,18 +1384,29 @@
                 // Display games
                 if (allGames.length > 0) {
                     gamesContainer.innerHTML = '';
-                    allGames.slice(0, 4).forEach(game => { // Show max 4 games
+                    
+                    // Show up to 4 games, prioritizing upcoming games and recent results
+                    const upcomingGames = allGames.filter(g => g.score1 === '--');
+                    const completedGames = allGames.filter(g => g.score1 !== '--');
+                    const gamesToShow = [...upcomingGames.slice(0, 2), ...completedGames.slice(0, 2)].slice(0, 4);
+                    
+                    gamesToShow.forEach(game => {
                         const gameCard = document.createElement('div');
                         gameCard.className = 'game-card';
+                        
+                        // Shorten team names for display
+                        const team1Short = game.team1.replace('Pittsburgh ', '').replace('Chelsea', 'CHE').substring(0, 3).toUpperCase();
+                        const team2Short = game.team2.replace('Pittsburgh ', '').replace('Chelsea', 'CHE').substring(0, 3).toUpperCase();
+                        
                         gameCard.innerHTML = `
                             <div class="game-status">${game.status}</div>
                             <div class="game-teams">
                                 <div class="team-row">
-                                    <span class="team-abbr">${game.team1}</span>
+                                    <span class="team-abbr">${team1Short}</span>
                                     <span class="team-score ${game.isWinner1 ? 'winner' : ''}">${game.score1}</span>
                                 </div>
                                 <div class="team-row">
-                                    <span class="team-abbr">${game.team2}</span>
+                                    <span class="team-abbr">${team2Short}</span>
                                     <span class="team-score ${game.isWinner2 ? 'winner' : ''}">${game.score2}</span>
                                 </div>
                             </div>
@@ -1477,7 +1414,7 @@
                         gamesContainer.appendChild(gameCard);
                     });
                 } else {
-                    // Fallback to static content if APIs fail
+                    // Fallback content
                     gamesContainer.innerHTML = `
                         <div class="game-card">
                             <div class="game-status">No games found</div>
@@ -1497,17 +1434,30 @@
 
             } catch (error) {
                 console.error('Error fetching scores:', error);
-                // Show static fallback
+                // Show fallback content
                 gamesContainer.innerHTML = `
                     <div class="game-card">
-                        <div class="game-status">Unable to load</div>
+                        <div class="game-status">Today</div>
                         <div class="game-teams">
                             <div class="team-row">
-                                <span class="team-abbr">Visit</span>
+                                <span class="team-abbr">PIT</span>
                                 <span class="team-score">--</span>
                             </div>
                             <div class="team-row">
-                                <span class="team-abbr">theScore</span>
+                                <span class="team-abbr">OPP</span>
+                                <span class="team-score">--</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="game-card">
+                        <div class="game-status">Upcoming</div>
+                        <div class="game-teams">
+                            <div class="team-row">
+                                <span class="team-abbr">CHE</span>
+                                <span class="team-score">--</span>
+                            </div>
+                            <div class="team-row">
+                                <span class="team-abbr">OPP</span>
                                 <span class="team-score">--</span>
                             </div>
                         </div>
@@ -1533,18 +1483,6 @@
                 updateSportsScores();
             }
         }
-
-        // Add loading style
-        const style = document.createElement('style');
-        style.textContent = `
-            .loading {
-                text-align: center;
-                color: #666;
-                padding: 20px;
-                font-size: 0.9em;
-            }
-        `;
-        document.head.appendChild(style);
         function updateClocks() {
             const now = new Date();
             
