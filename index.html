@@ -133,46 +133,100 @@
             border-radius: 4px;
         }
 
-        .widgets-section {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
-            margin-top: 30px;
+        .category-card.widget-size {
+            min-height: auto;
         }
 
-        @media (max-width: 1200px) {
-            .widgets-section {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .widgets-section {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .widget-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            backdrop-filter: blur(10px);
-            animation: slideUp 0.8s ease-out;
+        .widget-content {
             display: flex;
             flex-direction: column;
-            height: 100%;
+            gap: 10px;
         }
 
-        .calendar-widget {
-            grid-column: span 2;
-            max-width: 100%;
+        .widget-content .quick-links {
+            display: flex;
+            gap: 8px;
         }
 
-        @media (max-width: 900px) {
-            .calendar-widget {
-                grid-column: span 1;
-            }
+        .widget-content .quick-link-btn {
+            flex: 1;
+            padding: 10px;
+            font-size: 0.9em;
+        }
+
+        .widget-content .notes-textarea {
+            min-height: 100px;
+            font-size: 0.9em;
+        }
+
+        .widget-content .games-list {
+            max-height: 200px;
+            gap: 8px;
+        }
+
+        .widget-content .game-card {
+            padding: 10px;
+        }
+
+        .widget-content .game-status {
+            font-size: 0.7em;
+            margin-bottom: 6px;
+        }
+
+        .widget-content .team-row {
+            gap: 8px;
+        }
+
+        .widget-content .team-abbr {
+            font-weight: 600;
+            font-size: 0.9em;
+            flex-grow: 1;
+        }
+
+        .widget-content .team-score {
+            font-weight: 700;
+            font-size: 1em;
+            min-width: 25px;
+            text-align: right;
+        }
+
+        .widget-content .thescore-btn {
+            padding: 10px;
+            font-size: 0.9em;
+            background: #000;
+            color: #ffcc00;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .widget-content .thescore-btn:hover {
+            background: #ffcc00;
+            color: #000;
+        }
+
+        .notes-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85em;
+        }
+
+        .notes-status {
+            color: #888;
+            font-style: italic;
+        }
+
+        .notes-btn {
+            padding: 5px 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
         }
 
         /* World clocks in weather widget */
@@ -1067,71 +1121,76 @@
                     </a></li>
                 </ul>
             </div>
-        </div>
 
-        <!-- Widgets Section -->
-        <div class="widgets-section">
-            <div class="widget-card">
-                <h3 class="widget-title">📧 Email Access</h3>
-                <div class="quick-links">
-                    <button class="quick-link-btn" onclick="window.open('https://www.icloud.com/mail', '_blank')">
-                        iCloud Mail (Web)
-                    </button>
-                    <button class="quick-link-btn" onclick="window.location.href='mailto:'">
-                        Open Mail App
-                    </button>
-                </div>
-                <div class="calendar-note">
-                    <strong>Tip:</strong> Use iCloud Mail web version for quick access, or click "Open Mail App" to launch your default mail client.
-                </div>
-            </div>
-
-            <div class="widget-card">
-                <h3 class="widget-title">📝 Quick Notes</h3>
-                <div class="notes-container">
-                    <textarea id="quickNotes" class="notes-textarea" placeholder="Type your notes here... They'll save automatically!"></textarea>
-                    <div class="notes-footer">
-                        <span class="notes-status" id="notesStatus">Saved locally</span>
-                        <button class="notes-btn" onclick="window.open('https://www.icloud.com/notes', '_blank')">
-                            Open iCloud Notes →
+            <!-- Email Widget -->
+            <div class="category-card widget-size">
+                <h2 class="category-title" style="border-bottom-color: #667eea; color: #667eea;">
+                    <span class="category-icon">📧</span>
+                    Email Access
+                </h2>
+                <div class="widget-content">
+                    <div class="quick-links">
+                        <button class="quick-link-btn" onclick="window.open('https://www.icloud.com/mail', '_blank')">
+                            iCloud Mail
+                        </button>
+                        <button class="quick-link-btn" onclick="window.location.href='mailto:'">
+                            Mail App
                         </button>
                     </div>
                 </div>
             </div>
 
-            <div class="widget-card">
-                <h3 class="widget-title">📱 theScore</h3>
-                <div class="thescore-container">
+            <!-- Notes Widget -->
+            <div class="category-card widget-size">
+                <h2 class="category-title" style="border-bottom-color: #667eea; color: #667eea;">
+                    <span class="category-icon">📝</span>
+                    Quick Notes
+                </h2>
+                <div class="widget-content">
+                    <textarea id="quickNotes" class="notes-textarea" placeholder="Type your notes here..."></textarea>
+                    <div class="notes-footer">
+                        <span class="notes-status" id="notesStatus">Auto-saved</span>
+                        <button class="notes-btn" onclick="window.open('https://www.icloud.com/notes', '_blank')">
+                            iCloud →
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- theScore Widget -->
+            <div class="category-card widget-size">
+                <h2 class="category-title" style="border-bottom-color: #000; color: #000;">
+                    <span class="category-icon">⚽</span>
+                    theScore
+                </h2>
+                <div class="widget-content">
                     <div class="games-list">
-                        <!-- Steelers Game -->
+                        <!-- UPDATE THESE GAMES WITH CURRENT INFO -->
+                        <!-- Example: Steelers Game -->
                         <div class="game-card">
-                            <div class="game-status">Sun 12/29 @ 1:00 PM</div>
+                            <div class="game-status">Sun 1/5 @ 1:00 PM</div>
                             <div class="game-teams">
                                 <div class="team-row">
-                                    <img src="https://www.google.com/s2/favicons?domain=steelers.com&sz=32" class="team-logo" alt="">
-                                    <span class="team-name-score">PIT</span>
+                                    <span class="team-abbr">PIT</span>
                                     <span class="team-score">--</span>
                                 </div>
                                 <div class="team-row">
-                                    <img src="https://www.google.com/s2/favicons?domain=nfl.com&sz=32" class="team-logo" alt="">
-                                    <span class="team-name-score">KC</span>
+                                    <span class="team-abbr">BAL</span>
                                     <span class="team-score">--</span>
                                 </div>
                             </div>
                         </div>
-
+                        
                         <!-- Penguins Game -->
                         <div class="game-card">
                             <div class="game-status">Tonight @ 7:00 PM</div>
                             <div class="game-teams">
                                 <div class="team-row">
-                                    <img src="https://www.google.com/s2/favicons?domain=nhl.com&sz=32" class="team-logo" alt="">
-                                    <span class="team-name-score">PIT</span>
+                                    <span class="team-abbr">PIT</span>
                                     <span class="team-score">--</span>
                                 </div>
                                 <div class="team-row">
-                                    <img src="https://www.google.com/s2/favicons?domain=nhl.com&sz=32" class="team-logo" alt="">
-                                    <span class="team-name-score">NYR</span>
+                                    <span class="team-abbr">NYR</span>
                                     <span class="team-score">--</span>
                                 </div>
                             </div>
@@ -1139,44 +1198,27 @@
 
                         <!-- Chelsea Game -->
                         <div class="game-card">
-                            <div class="game-status">Sat 8/31 @ 10:00 AM</div>
+                            <div class="game-status">Sat @ 10:00 AM</div>
                             <div class="game-teams">
                                 <div class="team-row">
-                                    <img src="https://www.google.com/s2/favicons?domain=chelseafc.com&sz=32" class="team-logo" alt="">
-                                    <span class="team-name-score">CHE</span>
+                                    <span class="team-abbr">CHE</span>
                                     <span class="team-score">--</span>
                                 </div>
                                 <div class="team-row">
-                                    <img src="https://www.google.com/s2/favicons?domain=premierleague.com&sz=32" class="team-logo" alt="">
-                                    <span class="team-name-score">ARS</span>
+                                    <span class="team-abbr">LIV</span>
                                     <span class="team-score">--</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Pirates Game -->
-                        <div class="game-card">
-                            <div class="game-status">Final</div>
-                            <div class="game-teams">
-                                <div class="team-row">
-                                    <img src="https://www.google.com/s2/favicons?domain=mlb.com&sz=32" class="team-logo" alt="">
-                                    <span class="team-name-score">PIT</span>
-                                    <span class="team-score winner">5</span>
-                                </div>
-                                <div class="team-row">
-                                    <img src="https://www.google.com/s2/favicons?domain=mlb.com&sz=32" class="team-logo" alt="">
-                                    <span class="team-name-score">STL</span>
-                                    <span class="team-score">3</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <button class="quick-link-btn thescore-btn" onclick="window.open('https://www.thescore.com', '_blank')">
+                    <button class="thescore-btn" onclick="window.open('https://www.thescore.com', '_blank')">
                         Open theScore →
                     </button>
                 </div>
             </div>
         </div>
+
+        <!-- Removed the separate widgets section since they're now in main grid -->
     </div>
 
     <script>
