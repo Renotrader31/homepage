@@ -216,8 +216,8 @@
 
         .weather-forecast {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
             padding: 20px 0;
             margin: 20px 0;
             border-top: 2px solid rgba(102, 126, 234, 0.1);
@@ -226,7 +226,7 @@
 
         @media (max-width: 600px) {
             .weather-forecast {
-                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
             }
         }
 
@@ -578,22 +578,6 @@
                     </div>
                     <div class="forecast-day">
                         <div class="forecast-date">Day 3</div>
-                        <div class="forecast-icon">☀️</div>
-                        <div class="forecast-temps">
-                            <span class="forecast-high">--°</span>
-                            <span class="forecast-low">--°</span>
-                        </div>
-                    </div>
-                    <div class="forecast-day">
-                        <div class="forecast-date">Day 4</div>
-                        <div class="forecast-icon">☀️</div>
-                        <div class="forecast-temps">
-                            <span class="forecast-high">--°</span>
-                            <span class="forecast-low">--°</span>
-                        </div>
-                    </div>
-                    <div class="forecast-day">
-                        <div class="forecast-date">Day 5</div>
                         <div class="forecast-icon">☀️</div>
                         <div class="forecast-temps">
                             <span class="forecast-high">--°</span>
@@ -988,8 +972,9 @@
                     document.getElementById('humidity').textContent = current.humidity + '%';
                     document.getElementById('wind').textContent = Math.round(parseInt(current.windspeedMiles)) + ' mph';
                     
-                    // Update forecast
+                    // Update forecast - wttr.in only provides 3 days
                     if (weather && weather.length > 0) {
+                        console.log('Weather data days available:', weather.length);
                         updateForecast(weather);
                     }
                 } else {
@@ -1006,7 +991,8 @@
             const forecastDays = document.querySelectorAll('.forecast-day');
             const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
             
-            weatherData.slice(0, 5).forEach((day, index) => {
+            // Update only the 3 days we have real data for
+            weatherData.slice(0, 3).forEach((day, index) => {
                 if (forecastDays[index]) {
                     // Convert temps to Fahrenheit
                     const maxTempF = Math.round((parseInt(day.maxtempC) * 9/5) + 32);
@@ -1019,7 +1005,7 @@
                     } else if (index === 1) {
                         dayName = 'Tomorrow';
                     } else {
-                        // Calculate the actual day name from the date
+                        // Day 3 - get actual day name
                         const date = new Date(day.date);
                         dayName = dayNames[date.getDay()];
                     }
