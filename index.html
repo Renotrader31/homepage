@@ -529,6 +529,16 @@
             letter-spacing: 0.5px;
         }
 
+        .game-status.live {
+            color: #dc3545;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
         .game-teams {
             display: flex;
             flex-direction: column;
@@ -814,6 +824,21 @@
             color: #333;
             font-weight: 500;
         }
+
+        .loading {
+            text-align: center;
+            color: #666;
+            padding: 20px;
+            font-style: italic;
+        }
+
+        .api-status {
+            font-size: 0.75em;
+            color: #888;
+            text-align: center;
+            margin-top: 10px;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -837,11 +862,11 @@
                 <div class="weather-header">
                     <h3 class="weather-title">🌤️ Weather</h3>
                     <select class="weather-select" id="citySelect">
-                        <option value="Reno+Nevada">Reno, NV</option>
-                        <option value="Pittsburgh+Pennsylvania">Pittsburgh, PA</option>
-                        <option value="Alexandria+Virginia">Alexandria, VA</option>
-                        <option value="San+Francisco+California">San Francisco, CA</option>
-                        <option value="Truckee+California">Truckee, CA</option>
+                        <option value="Reno">Reno, NV</option>
+                        <option value="Pittsburgh">Pittsburgh, PA</option>
+                        <option value="Alexandria">Alexandria, VA</option>
+                        <option value="San Francisco">San Francisco, CA</option>
+                        <option value="Truckee">Truckee, CA</option>
                     </select>
                 </div>
                 <div class="weather-current">
@@ -1161,64 +1186,19 @@
             <div class="category-card widget-size">
                 <h2 class="category-title" style="border-bottom-color: #000; color: #000;">
                     <span class="category-icon">⚽</span>
-                    theScore
+                    Live Scores
                 </h2>
                 <div class="widget-content">
-                    <div class="games-list">
-                        <!-- UPDATE THESE GAMES WITH CURRENT INFO -->
-                        <!-- Example: Steelers Game -->
-                        <div class="game-card">
-                            <div class="game-status">Sun 1/5 @ 1:00 PM</div>
-                            <div class="game-teams">
-                                <div class="team-row">
-                                    <span class="team-abbr">PIT</span>
-                                    <span class="team-score">--</span>
-                                </div>
-                                <div class="team-row">
-                                    <span class="team-abbr">BAL</span>
-                                    <span class="team-score">--</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Penguins Game -->
-                        <div class="game-card">
-                            <div class="game-status">Tonight @ 7:00 PM</div>
-                            <div class="game-teams">
-                                <div class="team-row">
-                                    <span class="team-abbr">PIT</span>
-                                    <span class="team-score">--</span>
-                                </div>
-                                <div class="team-row">
-                                    <span class="team-abbr">NYR</span>
-                                    <span class="team-score">--</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Chelsea Game -->
-                        <div class="game-card">
-                            <div class="game-status">Sat @ 10:00 AM</div>
-                            <div class="game-teams">
-                                <div class="team-row">
-                                    <span class="team-abbr">CHE</span>
-                                    <span class="team-score">--</span>
-                                </div>
-                                <div class="team-row">
-                                    <span class="team-abbr">LIV</span>
-                                    <span class="team-score">--</span>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="games-list" id="scoresList">
+                        <div class="loading">Loading scores...</div>
                     </div>
                     <button class="thescore-btn" onclick="window.open('https://www.thescore.com', '_blank')">
                         Open theScore →
                     </button>
+                    <div class="api-status" id="apiStatus"></div>
                 </div>
             </div>
         </div>
-
-        <!-- Removed the separate widgets section since they're now in main grid -->
     </div>
 
     <script>
@@ -1293,310 +1273,7 @@
             }, 500);
         });
 
-        // theScore Live Updates using API-Sports
-        async function updateSportsScores() {
-            const gamesContainer = document.querySelector('.games-list');
-            if (!gamesContainer) return;
-            
-            gamesContainer.innerHTML = '<div class="loading">Loading scores...</div>';
-            
-            const apiKey = 'ce7101056c3ac273e9bea70115c46542';
-            const allGames = [];
-            
-            // Team configurations
-            const teams = [
-                { name: 'Chelsea', id: 49, sport: 'soccer', api: 'https://v3.football.api-sports.io' },
-                { name: 'Penguins', id: 696, sport: 'hockey', api: 'https://v1.hockey.api-sports.io' },
-                { name: 'Steelers', id: 22, sport: 'nfl', api: 'https://v1.american-football.api-sports.io' },
-                { name: 'Pirates', id: 28, sport: 'baseball', api: 'https://v1.baseball.api-sports.io' },
-                { name: 'Ohio Football', id: 168, sport: 'ncaaf', api: 'https://v1.american-football.api-sports.io' },
-                { name: 'Ohio Basketball', id: 2057, sport: 'ncaab', api: 'https://v2.nba.api-sports.io' }
-            ];
-            
-            try {
-                // Get current date
-                const today = new Date().toISOString().split('T')[0];
-                const currentYear = new Date().getFullYear();
-                
-                // Fetch data for each team
-                for (const team of teams) {
-                    try {
-                        let endpoint = '';
-                        let params = '';
-                        
-                        // Configure endpoint based on sport
-                        if (team.sport === 'soccer') {
-                            // Get Chelsea fixtures
-                            endpoint = `${team.api}/fixtures?team=${team.id}&last=1`;
-                            const nextEndpoint = `${team.api}/fixtures?team=${team.id}&next=1`;
-                            
-                            // Get last game
-                            const lastResponse = await fetch(endpoint, {
-                                headers: { 'x-apisports-key': apiKey }
-                            });
-                            
-                            if (lastResponse.ok) {
-                                const lastData = await lastResponse.json();
-                                if (lastData.response && lastData.response[0]) {
-                                    const game = lastData.response[0];
-                                    const homeTeam = game.teams.home.name.includes('Chelsea') ? 'CHE' : game.teams.home.name.substring(0, 3).toUpperCase();
-                                    const awayTeam = game.teams.away.name.includes('Chelsea') ? 'CHE' : game.teams.away.name.substring(0, 3).toUpperCase();
-                                    
-                                    allGames.push({
-                                        date: new Date(game.fixture.date),
-                                        status: 'Final',
-                                        team1: awayTeam,
-                                        score1: game.goals.away !== null ? String(game.goals.away) : '--',
-                                        team2: homeTeam,
-                                        score2: game.goals.home !== null ? String(game.goals.home) : '--'
-                                    });
-                                }
-                            }
-                            
-                            // Get next game
-                            const nextResponse = await fetch(nextEndpoint, {
-                                headers: { 'x-apisports-key': apiKey }
-                            });
-                            
-                            if (nextResponse.ok) {
-                                const nextData = await nextResponse.json();
-                                if (nextData.response && nextData.response[0]) {
-                                    const game = nextData.response[0];
-                                    const gameDate = new Date(game.fixture.date);
-                                    const homeTeam = game.teams.home.name.includes('Chelsea') ? 'CHE' : game.teams.home.name.substring(0, 3).toUpperCase();
-                                    const awayTeam = game.teams.away.name.includes('Chelsea') ? 'CHE' : game.teams.away.name.substring(0, 3).toUpperCase();
-                                    
-                                    allGames.push({
-                                        date: gameDate,
-                                        status: gameDate.toLocaleDateString('en-US', { weekday: 'short', month: 'numeric', day: 'numeric' }) + 
-                                                ' @ ' + gameDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
-                                        team1: awayTeam,
-                                        score1: '--',
-                                        team2: homeTeam,
-                                        score2: '--'
-                                    });
-                                }
-                            }
-                            
-                        } else if (team.sport === 'hockey') {
-                            // Get Penguins games
-                            endpoint = `${team.api}/games?team=${team.id}&season=${currentYear}&last=1`;
-                            
-                            const response = await fetch(endpoint, {
-                                headers: { 'x-apisports-key': apiKey }
-                            });
-                            
-                            if (response.ok) {
-                                const data = await response.json();
-                                if (data.response && data.response[0]) {
-                                    const game = data.response[0];
-                                    const homeTeam = game.teams.home.name.includes('Pittsburgh') ? 'PIT' : game.teams.home.name.substring(0, 3).toUpperCase();
-                                    const awayTeam = game.teams.away.name.includes('Pittsburgh') ? 'PIT' : game.teams.away.name.substring(0, 3).toUpperCase();
-                                    
-                                    allGames.push({
-                                        date: new Date(game.date),
-                                        status: game.status.long === 'Finished' ? 'Final' : game.status.long,
-                                        team1: awayTeam,
-                                        score1: game.scores.away !== null ? String(game.scores.away) : '--',
-                                        team2: homeTeam,
-                                        score2: game.scores.home !== null ? String(game.scores.home) : '--'
-                                    });
-                                }
-                            }
-                            
-                        } else if (team.sport === 'nfl' || team.sport === 'ncaaf') {
-                            // Get Football games (NFL and NCAA)
-                            const season = team.sport === 'nfl' ? currentYear : currentYear;
-                            endpoint = `${team.api}/games?team=${team.id}&season=${season}&last=1`;
-                            
-                            const response = await fetch(endpoint, {
-                                headers: { 'x-apisports-key': apiKey }
-                            });
-                            
-                            if (response.ok) {
-                                const data = await response.json();
-                                if (data.response && data.response[0]) {
-                                    const game = data.response[0];
-                                    let homeTeam, awayTeam;
-                                    
-                                    if (team.sport === 'nfl') {
-                                        homeTeam = game.teams.home.name.includes('Pittsburgh') ? 'PIT' : game.teams.home.name.substring(0, 3).toUpperCase();
-                                        awayTeam = game.teams.away.name.includes('Pittsburgh') ? 'PIT' : game.teams.away.name.substring(0, 3).toUpperCase();
-                                    } else {
-                                        homeTeam = game.teams.home.name.includes('Ohio') ? 'OHIO' : game.teams.home.name.substring(0, 3).toUpperCase();
-                                        awayTeam = game.teams.away.name.includes('Ohio') ? 'OHIO' : game.teams.away.name.substring(0, 3).toUpperCase();
-                                    }
-                                    
-                                    allGames.push({
-                                        date: new Date(game.game.date.date),
-                                        status: game.game.status.long === 'Finished' ? 'Final' : game.game.status.long,
-                                        team1: awayTeam,
-                                        score1: game.scores.away.total !== null ? String(game.scores.away.total) : '--',
-                                        team2: homeTeam,
-                                        score2: game.scores.home.total !== null ? String(game.scores.home.total) : '--'
-                                    });
-                                }
-                            }
-                            
-                        } else if (team.sport === 'baseball') {
-                            // Get Pirates games
-                            endpoint = `${team.api}/games?team=${team.id}&season=${currentYear}&last=1`;
-                            
-                            const response = await fetch(endpoint, {
-                                headers: { 'x-apisports-key': apiKey }
-                            });
-                            
-                            if (response.ok) {
-                                const data = await response.json();
-                                if (data.response && data.response[0]) {
-                                    const game = data.response[0];
-                                    const homeTeam = game.teams.home.name.includes('Pittsburgh') ? 'PIT' : game.teams.home.name.substring(0, 3).toUpperCase();
-                                    const awayTeam = game.teams.away.name.includes('Pittsburgh') ? 'PIT' : game.teams.away.name.substring(0, 3).toUpperCase();
-                                    
-                                    allGames.push({
-                                        date: new Date(game.date),
-                                        status: game.status.long === 'Finished' ? 'Final' : game.status.long,
-                                        team1: awayTeam,
-                                        score1: game.scores.away.total !== null ? String(game.scores.away.total) : '--',
-                                        team2: homeTeam,
-                                        score2: game.scores.home.total !== null ? String(game.scores.home.total) : '--'
-                                    });
-                                }
-                            }
-                            
-                        } else if (team.sport === 'ncaab') {
-                            // Get Ohio Basketball games
-                            endpoint = `${team.api}/games?team=${team.id}&season=${currentYear}&last=1`;
-                            
-                            const response = await fetch(endpoint, {
-                                headers: { 'x-apisports-key': apiKey }
-                            });
-                            
-                            if (response.ok) {
-                                const data = await response.json();
-                                if (data.response && data.response[0]) {
-                                    const game = data.response[0];
-                                    const homeTeam = game.teams.home.name.includes('Ohio') ? 'OHIO' : game.teams.home.nickname.substring(0, 3).toUpperCase();
-                                    const awayTeam = game.teams.away.name.includes('Ohio') ? 'OHIO' : game.teams.away.nickname.substring(0, 3).toUpperCase();
-                                    
-                                    allGames.push({
-                                        date: new Date(game.date),
-                                        status: game.status.long === 'Finished' ? 'Final' : game.status.long,
-                                        team1: awayTeam,
-                                        score1: game.scores.away.total !== null ? String(game.scores.away.total) : '--',
-                                        team2: homeTeam,
-                                        score2: game.scores.home.total !== null ? String(game.scores.home.total) : '--'
-                                    });
-                                }
-                            }
-                        }
-                        
-                    } catch (teamError) {
-                        console.log(`Error fetching ${team.name}:`, teamError);
-                    }
-                }
-                
-                // Sort games by date and display
-                allGames.sort((a, b) => a.date - b.date);
-                
-                if (allGames.length > 0) {
-                    gamesContainer.innerHTML = '';
-                    allGames.slice(0, 4).forEach(game => {
-                        // Determine winners
-                        const score1Num = parseInt(game.score1);
-                        const score2Num = parseInt(game.score2);
-                        const isWinner1 = !isNaN(score1Num) && !isNaN(score2Num) && score1Num > score2Num;
-                        const isWinner2 = !isNaN(score1Num) && !isNaN(score2Num) && score2Num > score1Num;
-                        
-                        const gameCard = document.createElement('div');
-                        gameCard.className = 'game-card';
-                        gameCard.innerHTML = `
-                            <div class="game-status">${game.status}</div>
-                            <div class="game-teams">
-                                <div class="team-row">
-                                    <span class="team-abbr">${game.team1}</span>
-                                    <span class="team-score ${isWinner1 ? 'winner' : ''}">${game.score1}</span>
-                                </div>
-                                <div class="team-row">
-                                    <span class="team-abbr">${game.team2}</span>
-                                    <span class="team-score ${isWinner2 ? 'winner' : ''}">${game.score2}</span>
-                                </div>
-                            </div>
-                        `;
-                        gamesContainer.appendChild(gameCard);
-                    });
-                } else {
-                    // If no games found, show manual fallback
-                    updateManualScores();
-                }
-                
-            } catch (error) {
-                console.error('API-Sports error:', error);
-                // Fall back to manual scores
-                updateManualScores();
-            }
-        }
-        
-        // Manual fallback function
-        function updateManualScores() {
-            const gamesContainer = document.querySelector('.games-list');
-            if (!gamesContainer) return;
-            
-            // Manual backup scores - update these as needed
-            const games = [
-                {
-                    status: "Final",
-                    team1: "PIT", score1: "3",
-                    team2: "NYR", score2: "2"
-                },
-                {
-                    status: "Sat @ 7:00 PM",
-                    team1: "PIT", score1: "--",
-                    team2: "BUF", score2: "--"
-                },
-                {
-                    status: "Sun @ 1:00 PM",
-                    team1: "CHE", score1: "--",
-                    team2: "LIV", score2: "--"
-                },
-                {
-                    status: "Next Week",
-                    team1: "OHIO", score1: "--",
-                    team2: "KENT", score2: "--"
-                }
-            ];
-            
-            gamesContainer.innerHTML = '';
-            games.forEach(game => {
-                const score1Num = parseInt(game.score1);
-                const score2Num = parseInt(game.score2);
-                const isWinner1 = !isNaN(score1Num) && !isNaN(score2Num) && score1Num > score2Num;
-                const isWinner2 = !isNaN(score1Num) && !isNaN(score2Num) && score2Num > score1Num;
-                
-                const gameCard = document.createElement('div');
-                gameCard.className = 'game-card';
-                gameCard.innerHTML = `
-                    <div class="game-status">${game.status}</div>
-                    <div class="game-teams">
-                        <div class="team-row">
-                            <span class="team-abbr">${game.team1}</span>
-                            <span class="team-score ${isWinner1 ? 'winner' : ''}">${game.score1}</span>
-                        </div>
-                        <div class="team-row">
-                            <span class="team-abbr">${game.team2}</span>
-                            <span class="team-score ${isWinner2 ? 'winner' : ''}">${game.score2}</span>
-                        </div>
-                    </div>
-                `;
-                gamesContainer.appendChild(gameCard);
-            });
-        }
-
-        // Load scores on page load
-        updateSportsScores();
-        
-        // Update scores every 3 hours
-        setInterval(updateSportsScores, 10800000);
+        // Update world clocks
         function updateClocks() {
             const now = new Date();
             
@@ -1628,190 +1305,251 @@
         updateClocks();
         setInterval(updateClocks, 1000);
 
-        // Weather functionality
-        async function getWeather(city = 'Reno+Nevada') {
+        // Weather functionality using OpenWeatherMap (free tier)
+        async function getWeather(city = 'Reno') {
             try {
-                // Using Tomorrow.io API with your API key
-                const apiKey = 'xjF8KGq2KRXlya6xkw2tvQls3LULkFeN';
+                // Using OpenWeatherMap API
+                const apiKey = '38b2aa751e9c4ac44c319e31452fb3ff'; // Your API key
                 
-                // City coordinates mapping
-                const cityCoordinates = {
-                    'Reno+Nevada': '39.5296,-119.8138',
-                    'Pittsburgh+Pennsylvania': '40.4406,-79.9959',
-                    'Alexandria+Virginia': '38.8048,-77.0469',
-                    'San+Francisco+California': '37.7749,-122.4194',
-                    'Truckee+California': '39.3280,-120.1833'
-                };
+                // First, try with OpenWeatherMap
+                const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=imperial`);
                 
-                const coords = cityCoordinates[city] || '39.5296,-119.8138'; // Default to Reno
-                const [lat, lon] = coords.split(',');
-                
-                const response = await fetch(`https://api.tomorrow.io/v4/weather/forecast?location=${lat},${lon}&apikey=${apiKey}&units=imperial`);
-                
-                if (!response.ok) {
-                    throw new Error('Weather API error');
-                }
-                
-                const data = await response.json();
-                
-                // Current weather - Tomorrow.io uses the first interval of today
-                const today = data.timelines.daily[0];
-                const currentValues = today.values;
-                
-                // Display current weather with more details
-                const tempF = Math.round(currentValues.temperatureAvg);
-                const tempMax = Math.round(currentValues.temperatureMax);
-                const humidity = Math.round(currentValues.humidityAvg);
-                const windSpeed = Math.round(currentValues.windSpeedAvg);
-                const uvIndex = Math.round(currentValues.uvIndexMax || 0);
-                const visibility = currentValues.visibilityAvg ? Math.round(currentValues.visibilityAvg * 0.621371) : 10; // Convert km to miles
-                const pressure = currentValues.pressureSurfaceLevelAvg ? (currentValues.pressureSurfaceLevelAvg * 0.02953).toFixed(2) : '30.00'; // Convert mb to inches
-                
-                // Weather condition based on weather code
-                const weatherCode = currentValues.weatherCodeMax;
-                let condition = 'Clear';
-                
-                // Tomorrow.io weather codes
-                const weatherCodes = {
-                    0: 'Unknown',
-                    1000: 'Clear',
-                    1100: 'Mostly Clear',
-                    1101: 'Partly Cloudy',
-                    1102: 'Mostly Cloudy',
-                    1001: 'Cloudy',
-                    2000: 'Fog',
-                    2100: 'Light Fog',
-                    4000: 'Drizzle',
-                    4001: 'Rain',
-                    4200: 'Light Rain',
-                    4201: 'Heavy Rain',
-                    5000: 'Snow',
-                    5001: 'Flurries',
-                    5100: 'Light Snow',
-                    5101: 'Heavy Snow',
-                    6000: 'Freezing Drizzle',
-                    6001: 'Freezing Rain',
-                    6200: 'Light Freezing Rain',
-                    6201: 'Heavy Freezing Rain',
-                    7000: 'Ice Pellets',
-                    7101: 'Heavy Ice Pellets',
-                    7102: 'Light Ice Pellets',
-                    8000: 'Thunderstorm'
-                };
-                
-                const weatherIcons = {
-                    0: '🌤️',
-                    1000: '☀️',
-                    1100: '🌤️',
-                    1101: '⛅',
-                    1102: '☁️',
-                    1001: '☁️',
-                    2000: '🌫️',
-                    2100: '🌫️',
-                    4000: '🌦️',
-                    4001: '🌧️',
-                    4200: '🌦️',
-                    4201: '🌧️',
-                    5000: '❄️',
-                    5001: '🌨️',
-                    5100: '🌨️',
-                    5101: '❄️',
-                    6000: '🌨️',
-                    6001: '🌨️',
-                    6200: '🌨️',
-                    6201: '🌨️',
-                    7000: '🌨️',
-                    7101: '🌨️',
-                    7102: '🌨️',
-                    8000: '⛈️'
-                };
-                
-                if (weatherCodes[weatherCode]) {
-                    condition = weatherCodes[weatherCode];
-                }
-                
-                document.getElementById('temperature').textContent = tempMax + '°F';
-                document.getElementById('condition').textContent = condition;
-                document.getElementById('feels-like').textContent = tempF + '°F';
-                document.getElementById('humidity').textContent = humidity + '%';
-                document.getElementById('wind').textContent = windSpeed + ' mph';
-                document.getElementById('uv-index').textContent = uvIndex;
-                document.getElementById('visibility').textContent = visibility + ' mi';
-                document.getElementById('pressure').textContent = pressure + ' in';
-                
-                // 3-day forecast
-                const forecastContainer = document.getElementById('forecast');
-                forecastContainer.innerHTML = '';
-                
-                const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-                const availableDays = Math.min(3, data.timelines.daily.length);
-                
-                for (let i = 0; i < availableDays; i++) {
-                    const day = data.timelines.daily[i];
-                    const date = new Date(day.time);
-                    const dayName = i === 0 ? 'Today' : i === 1 ? 'Tomorrow' : days[date.getDay()];
-                    const maxTemp = Math.round(day.values.temperatureMax);
-                    const minTemp = Math.round(day.values.temperatureMin);
-                    const dayWeatherCode = day.values.weatherCodeMax;
+                if (response.ok) {
+                    const data = await response.json();
                     
-                    let dayIcon = weatherIcons[dayWeatherCode] || '🌤️';
+                    // Update current weather
+                    document.getElementById('temperature').textContent = Math.round(data.main.temp) + '°F';
+                    document.getElementById('condition').textContent = data.weather[0].main;
+                    document.getElementById('feels-like').textContent = Math.round(data.main.feels_like) + '°F';
+                    document.getElementById('humidity').textContent = data.main.humidity + '%';
+                    document.getElementById('wind').textContent = Math.round(data.wind.speed) + ' mph';
+                    document.getElementById('visibility').textContent = Math.round(data.visibility / 1609) + ' mi';
+                    document.getElementById('pressure').textContent = (data.main.pressure * 0.02953).toFixed(2) + ' in';
                     
-                    const forecastDay = document.createElement('div');
-                    forecastDay.className = 'forecast-day';
-                    forecastDay.innerHTML = `
-                        <span class="forecast-date">${dayName}</span>
-                        <span class="forecast-icon">${dayIcon}</span>
-                        <span class="forecast-high">${maxTemp}°</span>
-                        <span class="forecast-low">${minTemp}°</span>
-                    `;
-                    forecastContainer.appendChild(forecastDay);
+                    // Get forecast
+                    const forecastResponse = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=imperial`);
+                    if (forecastResponse.ok) {
+                        const forecastData = await forecastResponse.json();
+                        updateForecast(forecastData.list);
+                    }
+                } else {
+                    // Fallback to static data if API fails
+                    setStaticWeather(city);
                 }
                 
             } catch (error) {
-                console.error('Weather fetch error:', error);
-                // Fallback to placeholder data
-                document.getElementById('temperature').textContent = '72°F';
-                document.getElementById('condition').textContent = 'Clear';
-                document.getElementById('feels-like').textContent = '70°F';
-                document.getElementById('humidity').textContent = '45%';
-                document.getElementById('wind').textContent = '5 mph';
-                document.getElementById('uv-index').textContent = '3';
-                document.getElementById('visibility').textContent = '10 mi';
-                document.getElementById('pressure').textContent = '30.00 in';
-                
-                // Show placeholder forecast
-                const forecastContainer = document.getElementById('forecast');
-                forecastContainer.innerHTML = '';
-                const placeholderDays = ['Today', 'Tomorrow', 'Wed'];
-                placeholderDays.forEach((day, i) => {
-                    const forecastDay = document.createElement('div');
-                    forecastDay.className = 'forecast-day';
-                    forecastDay.innerHTML = `
-                        <span class="forecast-date">${day}</span>
-                        <span class="forecast-icon">☀️</span>
-                        <span class="forecast-high">75°</span>
-                        <span class="forecast-low">60°</span>
-                    `;
-                    forecastContainer.appendChild(forecastDay);
-                });
+                console.error('Weather API error:', error);
+                setStaticWeather(city);
             }
+        }
+
+        function setStaticWeather(city) {
+            // Static weather data as fallback
+            const staticWeather = {
+                'Reno': { temp: 72, condition: 'Clear', feels: 70, humidity: 25, wind: 5 },
+                'Pittsburgh': { temp: 68, condition: 'Partly Cloudy', feels: 66, humidity: 55, wind: 8 },
+                'Alexandria': { temp: 75, condition: 'Sunny', feels: 73, humidity: 45, wind: 7 },
+                'San Francisco': { temp: 65, condition: 'Foggy', feels: 63, humidity: 70, wind: 12 },
+                'Truckee': { temp: 60, condition: 'Clear', feels: 58, humidity: 30, wind: 6 }
+            };
+            
+            const weather = staticWeather[city] || staticWeather['Reno'];
+            
+            document.getElementById('temperature').textContent = weather.temp + '°F';
+            document.getElementById('condition').textContent = weather.condition;
+            document.getElementById('feels-like').textContent = weather.feels + '°F';
+            document.getElementById('humidity').textContent = weather.humidity + '%';
+            document.getElementById('wind').textContent = weather.wind + ' mph';
+            document.getElementById('uv-index').textContent = '3';
+            document.getElementById('visibility').textContent = '10 mi';
+            document.getElementById('pressure').textContent = '30.00 in';
+            
+            // Set static forecast
+            const forecastContainer = document.getElementById('forecast');
+            forecastContainer.innerHTML = '';
+            const days = ['Today', 'Tomorrow', 'Wed'];
+            days.forEach((day, i) => {
+                const forecastDay = document.createElement('div');
+                forecastDay.className = 'forecast-day';
+                forecastDay.innerHTML = `
+                    <span class="forecast-date">${day}</span>
+                    <span class="forecast-icon">☀️</span>
+                    <span class="forecast-high">${weather.temp + 3 - i}°</span>
+                    <span class="forecast-low">${weather.temp - 10 - i}°</span>
+                `;
+                forecastContainer.appendChild(forecastDay);
+            });
+        }
+
+        function updateForecast(forecastList) {
+            const forecastContainer = document.getElementById('forecast');
+            forecastContainer.innerHTML = '';
+            
+            // Get forecast for next 3 days (every 8th item = 24 hours)
+            const days = ['Today', 'Tomorrow', 'Day 3'];
+            for (let i = 0; i < 3 && i * 8 < forecastList.length; i++) {
+                const dayData = forecastList[i * 8];
+                const forecastDay = document.createElement('div');
+                forecastDay.className = 'forecast-day';
+                
+                const weatherIcon = getWeatherIcon(dayData.weather[0].main);
+                
+                forecastDay.innerHTML = `
+                    <span class="forecast-date">${days[i]}</span>
+                    <span class="forecast-icon">${weatherIcon}</span>
+                    <span class="forecast-high">${Math.round(dayData.main.temp_max)}°</span>
+                    <span class="forecast-low">${Math.round(dayData.main.temp_min)}°</span>
+                `;
+                forecastContainer.appendChild(forecastDay);
+            }
+        }
+
+        function getWeatherIcon(condition) {
+            const icons = {
+                'Clear': '☀️',
+                'Clouds': '☁️',
+                'Rain': '🌧️',
+                'Drizzle': '🌦️',
+                'Thunderstorm': '⛈️',
+                'Snow': '❄️',
+                'Mist': '🌫️',
+                'Fog': '🌫️'
+            };
+            return icons[condition] || '🌤️';
         }
 
         // City selector change event
         document.getElementById('citySelect').addEventListener('change', function() {
-            getWeather(this.value);
+            const city = this.value.split(' ')[0]; // Get just the city name
+            getWeather(city);
         });
 
-        // Load weather on page load
-        getWeather('Reno+Nevada');
-        // Update weather every 10 minutes
-        setInterval(() => {
-            const currentCity = document.getElementById('citySelect').value;
-            getWeather(currentCity);
-        }, 600000);
+        // Sports scores functionality
+        async function updateSportsScores() {
+            const scoresList = document.getElementById('scoresList');
+            const apiStatus = document.getElementById('apiStatus');
+            
+            try {
+                // Using ESPN API endpoints (these are public but undocumented)
+                const teams = {
+                    nfl: { team: 'steelers', id: 23 },
+                    nhl: { team: 'penguins', id: 16 },
+                    mlb: { team: 'pirates', id: 23 },
+                    soccer: { team: 'chelsea', league: 'eng.1', id: 363 }
+                };
+                
+                scoresList.innerHTML = '';
+                let gamesFound = false;
+                
+                // Try ESPN scoreboard API
+                for (const [sport, teamInfo] of Object.entries(teams)) {
+                    try {
+                        let url;
+                        if (sport === 'soccer') {
+                            url = `https://site.api.espn.com/apis/site/v2/sports/soccer/${teamInfo.league}/scoreboard`;
+                        } else {
+                            url = `https://site.api.espn.com/apis/site/v2/sports/${sport === 'nfl' ? 'football' : sport === 'mlb' ? 'baseball' : 'hockey'}/${sport}/scoreboard`;
+                        }
+                        
+                        const response = await fetch(url);
+                        if (response.ok) {
+                            const data = await response.json();
+                            const games = data.events || [];
+                            
+                            games.forEach(game => {
+                                const competitors = game.competitions[0].competitors;
+                                const isRelevantGame = competitors.some(c => 
+                                    c.team.displayName.toLowerCase().includes(teamInfo.team.toLowerCase())
+                                );
+                                
+                                if (isRelevantGame) {
+                                    gamesFound = true;
+                                    const gameCard = createGameCard(game, sport);
+                                    scoresList.appendChild(gameCard);
+                                }
+                            });
+                        }
+                    } catch (err) {
+                        console.error(`Error fetching ${sport} scores:`, err);
+                    }
+                }
+                
+                if (!gamesFound) {
+                    // Show static upcoming games
+                    showStaticGames(scoresList);
+                }
+                
+                apiStatus.textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+                
+            } catch (error) {
+                console.error('Scores update error:', error);
+                showStaticGames(scoresList);
+                apiStatus.textContent = 'Using cached data';
+            }
+        }
 
-        // You can edit the links here to customize your homepage
-        // Just change the href values and domain names in the favicon URLs
-    </script>
-</body>
-</html>
+        function createGameCard(game, sport) {
+            const gameCard = document.createElement('div');
+            gameCard.className = 'game-card';
+            
+            const competition = game.competitions[0];
+            const status = competition.status;
+            const competitors = competition.competitors;
+            
+            let statusText = status.type.description;
+            if (status.type.state === 'in') {
+                statusText = `LIVE - ${status.displayClock}`;
+                gameCard.querySelector('.game-status')?.classList.add('live');
+            } else if (status.type.state === 'pre') {
+                const gameDate = new Date(competition.date);
+                statusText = gameDate.toLocaleDateString('en-US', { weekday: 'short', month: 'numeric', day: 'numeric' }) + 
+                           ' @ ' + gameDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+            }
+            
+            const homeTeam = competitors.find(c => c.homeAway === 'home');
+            const awayTeam = competitors.find(c => c.homeAway === 'away');
+            
+            gameCard.innerHTML = `
+                <div class="game-status ${status.type.state === 'in' ? 'live' : ''}">${statusText}</div>
+                <div class="game-teams">
+                    <div class="team-row">
+                        <span class="team-abbr">${awayTeam.team.abbreviation}</span>
+                        <span class="team-score ${awayTeam.winner ? 'winner' : ''}">${awayTeam.score || '--'}</span>
+                    </div>
+                    <div class="team-row">
+                        <span class="team-abbr">${homeTeam.team.abbreviation}</span>
+                        <span class="team-score ${homeTeam.winner ? 'winner' : ''}">${homeTeam.score || '--'}</span>
+                    </div>
+                </div>
+            `;
+            
+            return gameCard;
+        }
+
+        function showStaticGames(container) {
+            // Static games data - update these manually as needed
+            const staticGames = [
+                {
+                    status: "Sun 1/5 @ 1:00 PM",
+                    team1: "PIT", score1: "--",
+                    team2: "CIN", score2: "--",
+                    sport: "NFL"
+                },
+                {
+                    status: "Mon @ 7:00 PM",
+                    team1: "PIT", score1: "--",
+                    team2: "NYR", score2: "--",
+                    sport: "NHL"
+                },
+                {
+                    status: "Sat @ 12:30 PM",
+                    team1: "CHE", score1: "--",
+                    team2: "CRY", score2: "--",
+                    sport: "Premier League"
+                },
+                {
+                    status: "Opening Day - April",
+                    team1: "PIT", score1: "--",
+                    team2: "MIA", score2: "--",
+                    sport: "MLB"
+                }
