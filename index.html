@@ -971,49 +971,6 @@
             }
         }
 
-        function updateForecast(weatherData) {
-            const forecastDays = document.querySelectorAll('.forecast-day');
-            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-            
-            // Update only the 3 days we have real data for
-            weatherData.slice(0, 3).forEach((day, index) => {
-                if (forecastDays[index]) {
-                    // Convert temps to Fahrenheit
-                    const maxTempF = Math.round((parseInt(day.maxtempC) * 9/5) + 32);
-                    const minTempF = Math.round((parseInt(day.mintempC) * 9/5) + 32);
-                    
-                    // Get day name
-                    let dayName;
-                    if (index === 0) {
-                        dayName = 'Today';
-                    } else if (index === 1) {
-                        dayName = 'Tomorrow';
-                    } else {
-                        // Day 3 - get actual day name
-                        const date = new Date(day.date);
-                        dayName = dayNames[date.getDay()];
-                    }
-                    
-                    // Get weather icon based on description
-                    const desc = day.hourly[4].weatherDesc[0].value.toLowerCase(); // Use noon weather
-                    let icon = '☀️';
-                    if (desc.includes('rain') || desc.includes('shower')) icon = '🌧️';
-                    else if (desc.includes('overcast') || desc.includes('cloudy')) icon = '☁️';
-                    else if (desc.includes('partly')) icon = '⛅';
-                    else if (desc.includes('clear') || desc.includes('sunny')) icon = '☀️';
-                    else if (desc.includes('snow')) icon = '❄️';
-                    else if (desc.includes('thunder') || desc.includes('storm')) icon = '⛈️';
-                    else if (desc.includes('fog') || desc.includes('mist')) icon = '🌫️';
-                    
-                    // Update the forecast day
-                    forecastDays[index].querySelector('.forecast-date').textContent = dayName;
-                    forecastDays[index].querySelector('.forecast-icon').textContent = icon;
-                    forecastDays[index].querySelector('.forecast-high').textContent = maxTempF + '°';
-                    forecastDays[index].querySelector('.forecast-low').textContent = minTempF + '°';
-                }
-            });
-        }
-
         function setStaticWeather(city) {
             const weather = {
                 'Reno': { temp: 45, feels: 42, humidity: 30, wind: 5 },
@@ -1051,6 +1008,11 @@
             });
         }
 
+        // City selector
+        document.getElementById('citySelect').addEventListener('change', function() {
+            getWeather(this.value);
+        });
+        
         // Sports scores functionality
         async function loadTeamScores() {
             const scoresList = document.getElementById('scoresList');
