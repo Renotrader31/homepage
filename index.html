@@ -428,95 +428,121 @@
         .thescore-container {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
         }
 
-        .score-intro {
-            color: #666;
-            font-size: 0.9em;
-            text-align: center;
-        }
-
-        .score-intro p {
-            margin: 0;
-        }
-
-        .teams-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin: 10px 0;
-        }
-
-        .team-badge {
+        .games-list {
             display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.08), rgba(118, 75, 162, 0.08));
-            border-radius: 10px;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 320px;
+            overflow-y: auto;
+        }
+
+        .games-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .games-list::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+            border-radius: 3px;
+        }
+
+        .games-list::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.3);
+            border-radius: 3px;
+        }
+
+        .game-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 12px;
+            border: 1px solid rgba(0,0,0,0.08);
             transition: all 0.2s ease;
         }
 
-        .team-badge:hover {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
-            transform: scale(1.05);
+        .game-card:hover {
+            transform: translateX(3px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
-        .team-badge img {
+        .game-status {
+            font-size: 0.75em;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .game-teams {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .team-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .team-logo {
             width: 24px;
             height: 24px;
             border-radius: 4px;
         }
 
-        .team-badge span {
-            font-size: 0.9em;
-            font-weight: 500;
+        .team-name-score {
+            font-weight: 600;
+            font-size: 0.95em;
+            flex-grow: 1;
+        }
+
+        .team-score {
+            font-weight: 700;
+            font-size: 1.1em;
+            min-width: 30px;
+            text-align: right;
+        }
+
+        .team-score.winner {
+            color: #28a745;
         }
 
         .thescore-btn {
             width: 100%;
             padding: 12px;
-            font-size: 1em;
-            background: linear-gradient(135deg, #ff6b00, #ff8800);
+            font-size: 0.95em;
+            background: #000;
+            color: #ffcc00;
+            font-weight: 600;
         }
 
         .thescore-btn:hover {
-            background: linear-gradient(135deg, #ff8800, #ff6b00);
+            background: #ffcc00;
+            color: #000;
         }
 
-        .app-links {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
+        body.dark-mode .game-card {
+            background: rgba(30, 30, 45, 0.8);
+            border-color: rgba(102, 126, 234, 0.2);
         }
 
-        .app-store-link {
-            padding: 8px 16px;
-            background: rgba(102, 126, 234, 0.1);
-            border-radius: 8px;
-            text-decoration: none;
-            color: #667eea;
-            font-size: 0.85em;
-            transition: all 0.2s ease;
-        }
-
-        .app-store-link:hover {
-            background: rgba(102, 126, 234, 0.2);
-            transform: translateY(-2px);
-        }
-
-        body.dark-mode .score-intro {
+        body.dark-mode .game-status {
             color: #999;
         }
 
-        body.dark-mode .team-badge span {
+        body.dark-mode .team-name-score {
             color: #e0e0e0;
         }
 
-        body.dark-mode .app-store-link {
-            color: #9bb5ff;
-            background: rgba(102, 126, 234, 0.15);
+        body.dark-mode .team-score {
+            color: #fff;
+        }
+
+        body.dark-mode .team-score.winner {
+            color: #4ade80;
         }
 
         body.dark-mode .notes-textarea {
@@ -1076,38 +1102,78 @@
             <div class="widget-card">
                 <h3 class="widget-title">📱 theScore</h3>
                 <div class="thescore-container">
-                    <div class="score-intro">
-                        <p>Check live scores and updates for your favorite teams:</p>
-                    </div>
-                    <div class="teams-grid">
-                        <div class="team-badge">
-                            <img src="https://www.google.com/s2/favicons?domain=steelers.com&sz=32" alt="Steelers">
-                            <span>Steelers</span>
+                    <div class="games-list">
+                        <!-- Steelers Game -->
+                        <div class="game-card">
+                            <div class="game-status">Sun 12/29 @ 1:00 PM</div>
+                            <div class="game-teams">
+                                <div class="team-row">
+                                    <img src="https://www.google.com/s2/favicons?domain=steelers.com&sz=32" class="team-logo" alt="">
+                                    <span class="team-name-score">PIT</span>
+                                    <span class="team-score">--</span>
+                                </div>
+                                <div class="team-row">
+                                    <img src="https://www.google.com/s2/favicons?domain=nfl.com&sz=32" class="team-logo" alt="">
+                                    <span class="team-name-score">KC</span>
+                                    <span class="team-score">--</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="team-badge">
-                            <img src="https://www.google.com/s2/favicons?domain=nhl.com&sz=32" alt="Penguins">
-                            <span>Penguins</span>
+
+                        <!-- Penguins Game -->
+                        <div class="game-card">
+                            <div class="game-status">Tonight @ 7:00 PM</div>
+                            <div class="game-teams">
+                                <div class="team-row">
+                                    <img src="https://www.google.com/s2/favicons?domain=nhl.com&sz=32" class="team-logo" alt="">
+                                    <span class="team-name-score">PIT</span>
+                                    <span class="team-score">--</span>
+                                </div>
+                                <div class="team-row">
+                                    <img src="https://www.google.com/s2/favicons?domain=nhl.com&sz=32" class="team-logo" alt="">
+                                    <span class="team-name-score">NYR</span>
+                                    <span class="team-score">--</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="team-badge">
-                            <img src="https://www.google.com/s2/favicons?domain=mlb.com&sz=32" alt="Pirates">
-                            <span>Pirates</span>
+
+                        <!-- Chelsea Game -->
+                        <div class="game-card">
+                            <div class="game-status">Sat 8/31 @ 10:00 AM</div>
+                            <div class="game-teams">
+                                <div class="team-row">
+                                    <img src="https://www.google.com/s2/favicons?domain=chelseafc.com&sz=32" class="team-logo" alt="">
+                                    <span class="team-name-score">CHE</span>
+                                    <span class="team-score">--</span>
+                                </div>
+                                <div class="team-row">
+                                    <img src="https://www.google.com/s2/favicons?domain=premierleague.com&sz=32" class="team-logo" alt="">
+                                    <span class="team-name-score">ARS</span>
+                                    <span class="team-score">--</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="team-badge">
-                            <img src="https://www.google.com/s2/favicons?domain=chelseafc.com&sz=32" alt="Chelsea">
-                            <span>Chelsea</span>
+
+                        <!-- Pirates Game -->
+                        <div class="game-card">
+                            <div class="game-status">Final</div>
+                            <div class="game-teams">
+                                <div class="team-row">
+                                    <img src="https://www.google.com/s2/favicons?domain=mlb.com&sz=32" class="team-logo" alt="">
+                                    <span class="team-name-score">PIT</span>
+                                    <span class="team-score winner">5</span>
+                                </div>
+                                <div class="team-row">
+                                    <img src="https://www.google.com/s2/favicons?domain=mlb.com&sz=32" class="team-logo" alt="">
+                                    <span class="team-name-score">STL</span>
+                                    <span class="team-score">3</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <button class="quick-link-btn thescore-btn" onclick="window.open('https://www.thescore.com', '_blank')">
-                        Open theScore for Live Scores →
+                        Open theScore →
                     </button>
-                    <div class="app-links">
-                        <a href="https://apps.apple.com/us/app/thescore-sports-news-scores/id285692706" target="_blank" class="app-store-link">
-                            📱 iOS App
-                        </a>
-                        <a href="https://play.google.com/store/apps/details?id=com.fivemobile.thescore" target="_blank" class="app-store-link">
-                            📱 Android App
-                        </a>
-                    </div>
                 </div>
             </div>
         </div>
