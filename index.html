@@ -1331,12 +1331,12 @@
                                         ' @ ' + gameDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
                             } else if (game.gameState === 'LIVE' || game.gameState === 'CRIT') {
                                 status = `LIVE - Period ${game.period || ''}`;
-                                homeScore = game.homeTeam.score || 0;
-                                awayScore = game.awayTeam.score || 0;
+                                homeScore = String(game.homeTeam.score || 0);
+                                awayScore = String(game.awayTeam.score || 0);
                             } else if (game.gameState === 'FINAL' || game.gameState === 'OFF') {
                                 status = 'Final';
-                                homeScore = game.homeTeam.score || 0;
-                                awayScore = game.awayTeam.score || 0;
+                                homeScore = String(game.homeTeam.score || 0);
+                                awayScore = String(game.awayTeam.score || 0);
                             }
                             
                             allGames.push({
@@ -1347,8 +1347,8 @@
                                 team2: isHome ? opponent : 'PIT',
                                 score1: isHome ? homeScore : awayScore,
                                 score2: isHome ? awayScore : homeScore,
-                                isWinner1: homeScore > awayScore && isHome,
-                                isWinner2: awayScore > homeScore && !isHome
+                                isWinner1: parseInt(homeScore) > parseInt(awayScore) && isHome,
+                                isWinner2: parseInt(awayScore) > parseInt(homeScore) && !isHome
                             });
                         });
                     }
@@ -1381,16 +1381,20 @@
                                         ' @ ' + gameDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
                             }
                             
+                            // Make sure scores are strings, not objects
+                            const awayScore = awayTeam.score ? String(awayTeam.score) : '--';
+                            const homeScore = homeTeam.score ? String(homeTeam.score) : '--';
+                            
                             allGames.push({
                                 sport: 'NFL',
                                 date: gameDate,
                                 status: status,
                                 team1: awayTeam.team.abbreviation,
                                 team2: homeTeam.team.abbreviation,
-                                score1: awayTeam.score || '--',
-                                score2: homeTeam.score || '--',
-                                isWinner1: awayTeam.winner,
-                                isWinner2: homeTeam.winner
+                                score1: awayScore,
+                                score2: homeScore,
+                                isWinner1: awayTeam.winner === true,
+                                isWinner2: homeTeam.winner === true
                             });
                         });
                     }
@@ -1414,16 +1418,19 @@
                                 const homeTeam = competition.competitors.find(c => c.homeAway === 'home');
                                 const awayTeam = competition.competitors.find(c => c.homeAway === 'away');
                                 
+                                const awayScore = awayTeam.score ? String(awayTeam.score) : '--';
+                                const homeScore = homeTeam.score ? String(homeTeam.score) : '--';
+                                
                                 allGames.push({
                                     sport: 'MLB',
                                     date: gameDate,
                                     status: competition.status.type.description,
                                     team1: awayTeam.team.abbreviation,
                                     team2: homeTeam.team.abbreviation,
-                                    score1: awayTeam.score || '--',
-                                    score2: homeTeam.score || '--',
-                                    isWinner1: awayTeam.winner,
-                                    isWinner2: homeTeam.winner
+                                    score1: awayScore,
+                                    score2: homeScore,
+                                    isWinner1: awayTeam.winner === true,
+                                    isWinner2: homeTeam.winner === true
                                 });
                             });
                         }
