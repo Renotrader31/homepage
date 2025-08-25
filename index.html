@@ -424,87 +424,99 @@
             transform: scale(1.05);
         }
 
-        /* Sports scores styles */
-        .sports-scores {
+        /* theScore widget styles */
+        .thescore-container {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            flex-grow: 1;
-            margin-bottom: 15px;
+            gap: 15px;
         }
 
-        .team-score {
+        .score-intro {
+            color: #666;
+            font-size: 0.9em;
+            text-align: center;
+        }
+
+        .score-intro p {
+            margin: 0;
+        }
+
+        .teams-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .team-badge {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
             padding: 10px;
-            background: rgba(102, 126, 234, 0.05);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.08), rgba(118, 75, 162, 0.08));
             border-radius: 10px;
             transition: all 0.2s ease;
-            position: relative;
         }
 
-        .team-score:hover {
-            background: rgba(102, 126, 234, 0.1);
-            transform: translateX(5px);
+        .team-badge:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
+            transform: scale(1.05);
         }
 
-        .team-icon {
-            width: 28px;
-            height: 28px;
-            border-radius: 5px;
+        .team-badge img {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
         }
 
-        .team-info {
+        .team-badge span {
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .thescore-btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 1em;
+            background: linear-gradient(135deg, #ff6b00, #ff8800);
+        }
+
+        .thescore-btn:hover {
+            background: linear-gradient(135deg, #ff8800, #ff6b00);
+        }
+
+        .app-links {
             display: flex;
-            flex-direction: column;
-            gap: 2px;
-            flex-grow: 1;
+            gap: 10px;
+            justify-content: center;
         }
 
-        .team-name {
-            font-weight: 600;
-            font-size: 0.95em;
-        }
-
-        .team-record {
-            font-size: 0.8em;
-            color: #666;
-        }
-
-        .team-link {
-            color: #667eea;
+        .app-store-link {
+            padding: 8px 16px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 8px;
             text-decoration: none;
-            font-size: 1.2em;
-            padding: 0 10px;
-            opacity: 0.7;
+            color: #667eea;
+            font-size: 0.85em;
             transition: all 0.2s ease;
         }
 
-        .team-link:hover {
-            opacity: 1;
-            transform: scale(1.2);
+        .app-store-link:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
         }
 
-        .sports-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .sports-buttons .quick-link-btn {
-            flex: 1;
-        }
-
-        body.dark-mode .team-name {
-            color: #e0e0e0;
-        }
-
-        body.dark-mode .team-record {
+        body.dark-mode .score-intro {
             color: #999;
         }
 
-        body.dark-mode .team-link {
+        body.dark-mode .team-badge span {
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .app-store-link {
             color: #9bb5ff;
+            background: rgba(102, 126, 234, 0.15);
         }
 
         body.dark-mode .notes-textarea {
@@ -883,6 +895,10 @@
                         <img src="https://www.google.com/s2/favicons?domain=mlb.com&sz=32" class="favicon" alt="">
                         Pittsburgh Pirates
                     </a></li>
+                    <li><a href="https://www.chelseafc.com/en" target="_blank">
+                        <img src="https://www.google.com/s2/favicons?domain=chelseafc.com&sz=32" class="favicon" alt="">
+                        Chelsea FC
+                    </a></li>
                     <li><a href="https://ohiobobcats.com" target="_blank">
                         <img src="https://www.google.com/s2/favicons?domain=ohiobobcats.com&sz=32" class="favicon" alt="">
                         Ohio Bobcats
@@ -1058,48 +1074,40 @@
             </div>
 
             <div class="widget-card">
-                <h3 class="widget-title">🏆 Sports Teams</h3>
-                <div class="sports-scores" id="sportsScores">
-                    <div class="team-score">
-                        <img src="https://www.google.com/s2/favicons?domain=steelers.com&sz=32" class="team-icon" alt="Steelers">
-                        <div class="team-info">
-                            <span class="team-name">Steelers</span>
-                            <span class="team-record" id="steelersRecord">NFL</span>
-                        </div>
-                        <a href="https://www.espn.com/nfl/team/_/name/pit/pittsburgh-steelers" target="_blank" class="team-link">→</a>
+                <h3 class="widget-title">📱 theScore</h3>
+                <div class="thescore-container">
+                    <div class="score-intro">
+                        <p>Check live scores and updates for your favorite teams:</p>
                     </div>
-                    <div class="team-score">
-                        <img src="https://www.google.com/s2/favicons?domain=nhl.com&sz=32" class="team-icon" alt="Penguins">
-                        <div class="team-info">
-                            <span class="team-name">Penguins</span>
-                            <span class="team-record" id="penguinsRecord">NHL</span>
+                    <div class="teams-grid">
+                        <div class="team-badge">
+                            <img src="https://www.google.com/s2/favicons?domain=steelers.com&sz=32" alt="Steelers">
+                            <span>Steelers</span>
                         </div>
-                        <a href="https://www.espn.com/nhl/team/_/name/pit/pittsburgh-penguins" target="_blank" class="team-link">→</a>
-                    </div>
-                    <div class="team-score">
-                        <img src="https://www.google.com/s2/favicons?domain=mlb.com&sz=32" class="team-icon" alt="Pirates">
-                        <div class="team-info">
-                            <span class="team-name">Pirates</span>
-                            <span class="team-record" id="piratesRecord">MLB</span>
+                        <div class="team-badge">
+                            <img src="https://www.google.com/s2/favicons?domain=nhl.com&sz=32" alt="Penguins">
+                            <span>Penguins</span>
                         </div>
-                        <a href="https://www.espn.com/mlb/team/_/name/pit/pittsburgh-pirates" target="_blank" class="team-link">→</a>
-                    </div>
-                    <div class="team-score">
-                        <img src="https://www.google.com/s2/favicons?domain=chelseafc.com&sz=32" class="team-icon" alt="Chelsea">
-                        <div class="team-info">
-                            <span class="team-name">Chelsea FC</span>
-                            <span class="team-record" id="chelseaRecord">Premier League</span>
+                        <div class="team-badge">
+                            <img src="https://www.google.com/s2/favicons?domain=mlb.com&sz=32" alt="Pirates">
+                            <span>Pirates</span>
                         </div>
-                        <a href="https://www.chelseafc.com/en" target="_blank" class="team-link">→</a>
+                        <div class="team-badge">
+                            <img src="https://www.google.com/s2/favicons?domain=chelseafc.com&sz=32" alt="Chelsea">
+                            <span>Chelsea</span>
+                        </div>
                     </div>
-                </div>
-                <div class="sports-buttons">
-                    <button class="quick-link-btn" onclick="window.open('https://www.thescore.com', '_blank')">
-                        theScore
+                    <button class="quick-link-btn thescore-btn" onclick="window.open('https://www.thescore.com', '_blank')">
+                        Open theScore for Live Scores →
                     </button>
-                    <button class="quick-link-btn" onclick="window.open('https://www.espn.com', '_blank')">
-                        ESPN
-                    </button>
+                    <div class="app-links">
+                        <a href="https://apps.apple.com/us/app/thescore-sports-news-scores/id285692706" target="_blank" class="app-store-link">
+                            📱 iOS App
+                        </a>
+                        <a href="https://play.google.com/store/apps/details?id=com.fivemobile.thescore" target="_blank" class="app-store-link">
+                            📱 Android App
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1176,18 +1184,6 @@
                 }, 1000);
             }, 500);
         });
-
-        // Sports Scores (Mock data - you'd need an API for real scores)
-        function loadSportsScores() {
-            // These would come from an ESPN API or similar
-            // For now, showing league/status
-            document.getElementById('steelersRecord').textContent = 'AFC North';
-            document.getElementById('penguinsRecord').textContent = 'Metropolitan Div';
-            document.getElementById('piratesRecord').textContent = 'NL Central';
-            document.getElementById('chelseaRecord').textContent = 'Premier League';
-        }
-
-        loadSportsScores();
 
         // World Clocks
         function updateClocks() {
