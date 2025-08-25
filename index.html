@@ -222,6 +222,8 @@
             margin-bottom: 30px;
             display: flex;
             justify-content: center;
+            align-items: center;
+            gap: 15px;
             animation: fadeIn 1s ease-out;
         }
 
@@ -241,6 +243,198 @@
             outline: none;
             box-shadow: 0 8px 30px rgba(0,0,0,0.2);
             transform: scale(1.02);
+        }
+
+        .theme-toggle {
+            padding: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .theme-icon {
+            font-size: 1.5em;
+        }
+
+        /* Dark mode styles */
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        body.dark-mode .category-card,
+        body.dark-mode .widget-card,
+        body.dark-mode .weather-card,
+        body.dark-mode .calendar-card {
+            background: rgba(30, 30, 45, 0.95);
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .search-input,
+        body.dark-mode .theme-toggle {
+            background: rgba(30, 30, 45, 0.95);
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .links-list a {
+            color: #b0b0b0;
+            background: rgba(255,255,255,0.02);
+        }
+
+        body.dark-mode .links-list a:hover {
+            color: #e0e0e0;
+            background: rgba(102, 126, 234, 0.2);
+        }
+
+        /* Notes widget styles */
+        .notes-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .notes-textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 12px;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 10px;
+            resize: vertical;
+            font-family: inherit;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+        }
+
+        .notes-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .notes-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notes-status {
+            font-size: 0.85em;
+            color: #888;
+            font-style: italic;
+        }
+
+        .notes-btn {
+            padding: 6px 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+        }
+
+        .notes-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Sports scores styles */
+        .sports-scores {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .team-score {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .team-score:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+
+        .team-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 5px;
+        }
+
+        .team-info {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .team-name {
+            font-weight: 600;
+            font-size: 1em;
+        }
+
+        .team-record {
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        /* World clocks styles */
+        .clocks-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .clock-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.08), rgba(118, 75, 162, 0.08));
+            border-radius: 10px;
+        }
+
+        .clock-city {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .clock-time {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+        }
+
+        body.dark-mode .clock-time,
+        body.dark-mode .team-name {
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .clock-city,
+        body.dark-mode .team-record {
+            color: #999;
+        }
+
+        body.dark-mode .notes-textarea {
+            background: rgba(20, 20, 35, 0.5);
+            color: #e0e0e0;
+            border-color: rgba(102, 126, 234, 0.3);
         }
 
         .top-widgets {
@@ -463,6 +657,9 @@
 
         <div class="search-bar">
             <input type="text" class="search-input" placeholder="Search Google..." id="searchInput">
+            <button class="theme-toggle" id="themeToggle" title="Toggle Dark Mode">
+                <span class="theme-icon">🌙</span>
+            </button>
         </div>
 
         <!-- Top Widgets Section -->
@@ -749,6 +946,71 @@
                     <strong>Tip:</strong> Use iCloud Mail web version for quick access, or click "Open Mail App" to launch your default mail client.
                 </div>
             </div>
+
+            <div class="widget-card">
+                <h3 class="widget-title">📝 Quick Notes</h3>
+                <div class="notes-container">
+                    <textarea id="quickNotes" class="notes-textarea" placeholder="Type your notes here... They'll save automatically!"></textarea>
+                    <div class="notes-footer">
+                        <span class="notes-status" id="notesStatus">Saved locally</span>
+                        <button class="notes-btn" onclick="window.open('https://www.icloud.com/notes', '_blank')">
+                            Open iCloud Notes →
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="widget-card">
+                <h3 class="widget-title">🏆 Pittsburgh Sports</h3>
+                <div class="sports-scores" id="sportsScores">
+                    <div class="team-score">
+                        <img src="https://www.google.com/s2/favicons?domain=steelers.com&sz=32" class="team-icon" alt="Steelers">
+                        <div class="team-info">
+                            <span class="team-name">Steelers</span>
+                            <span class="team-record" id="steelersRecord">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="team-score">
+                        <img src="https://www.google.com/s2/favicons?domain=nhl.com&sz=32" class="team-icon" alt="Penguins">
+                        <div class="team-info">
+                            <span class="team-name">Penguins</span>
+                            <span class="team-record" id="penguinsRecord">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="team-score">
+                        <img src="https://www.google.com/s2/favicons?domain=mlb.com&sz=32" class="team-icon" alt="Pirates">
+                        <div class="team-info">
+                            <span class="team-name">Pirates</span>
+                            <span class="team-record" id="piratesRecord">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="quick-link-btn" style="margin-top: 15px; width: 100%;" onclick="window.open('https://www.espn.com/nfl/team/_/name/pit/pittsburgh-steelers', '_blank')">
+                    View Full Scores on ESPN
+                </button>
+            </div>
+
+            <div class="widget-card">
+                <h3 class="widget-title">🌍 World Clocks</h3>
+                <div class="clocks-container">
+                    <div class="clock-item">
+                        <span class="clock-city">Reno</span>
+                        <span class="clock-time" id="clockReno">--:--</span>
+                    </div>
+                    <div class="clock-item">
+                        <span class="clock-city">Pittsburgh</span>
+                        <span class="clock-time" id="clockPittsburgh">--:--</span>
+                    </div>
+                    <div class="clock-item">
+                        <span class="clock-city">Alexandria</span>
+                        <span class="clock-time" id="clockAlexandria">--:--</span>
+                    </div>
+                    <div class="clock-item">
+                        <span class="clock-city">San Francisco</span>
+                        <span class="clock-time" id="clockSF">--:--</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -780,6 +1042,92 @@
                 }
             }
         });
+
+        // Dark mode toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const themeIcon = themeToggle.querySelector('.theme-icon');
+
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            body.classList.add('dark-mode');
+            themeIcon.textContent = '☀️';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            const isDark = body.classList.contains('dark-mode');
+            themeIcon.textContent = isDark ? '☀️' : '🌙';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
+
+        // Quick Notes functionality
+        const notesTextarea = document.getElementById('quickNotes');
+        const notesStatus = document.getElementById('notesStatus');
+
+        // Load saved notes
+        const savedNotes = localStorage.getItem('quickNotes');
+        if (savedNotes) {
+            notesTextarea.value = savedNotes;
+        }
+
+        // Auto-save notes as user types
+        let saveTimeout;
+        notesTextarea.addEventListener('input', () => {
+            notesStatus.textContent = 'Saving...';
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                localStorage.setItem('quickNotes', notesTextarea.value);
+                notesStatus.textContent = 'Saved locally';
+                setTimeout(() => {
+                    notesStatus.textContent = 'Auto-saved ✓';
+                }, 1000);
+            }, 500);
+        });
+
+        // Sports Scores (Mock data - you'd need an API for real scores)
+        function loadSportsScores() {
+            // These would come from an ESPN API or similar
+            // For now, showing placeholder data
+            document.getElementById('steelersRecord').textContent = 'Next: Sun vs Ravens';
+            document.getElementById('penguinsRecord').textContent = '28-15-5 (3rd Metro)';
+            document.getElementById('piratesRecord').textContent = 'Season starts April 2025';
+        }
+
+        loadSportsScores();
+
+        // World Clocks
+        function updateClocks() {
+            const now = new Date();
+            
+            // Time zones for each city
+            const timeZones = {
+                'Reno': 'America/Los_Angeles',
+                'Pittsburgh': 'America/New_York',
+                'Alexandria': 'America/New_York',
+                'SF': 'America/Los_Angeles'
+            };
+
+            // Update each clock
+            Object.keys(timeZones).forEach(city => {
+                const cityTime = new Date(now.toLocaleString("en-US", {timeZone: timeZones[city]}));
+                const hours = cityTime.getHours();
+                const minutes = cityTime.getMinutes();
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                const displayHours = hours % 12 || 12;
+                const displayMinutes = minutes < 10 ? '0' + minutes : minutes;
+                
+                const clockElement = document.getElementById('clock' + city.replace(' ', ''));
+                if (clockElement) {
+                    clockElement.textContent = `${displayHours}:${displayMinutes} ${ampm}`;
+                }
+            });
+        }
+
+        // Update clocks immediately and then every second
+        updateClocks();
+        setInterval(updateClocks, 1000);
 
         // Weather functionality
         async function getWeather(city = 'Reno+Nevada') {
