@@ -428,18 +428,20 @@
         .sports-scores {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
             flex-grow: 1;
+            margin-bottom: 15px;
         }
 
         .team-score {
             display: flex;
             align-items: center;
-            gap: 15px;
-            padding: 12px;
+            gap: 12px;
+            padding: 10px;
             background: rgba(102, 126, 234, 0.05);
             border-radius: 10px;
             transition: all 0.2s ease;
+            position: relative;
         }
 
         .team-score:hover {
@@ -448,25 +450,49 @@
         }
 
         .team-icon {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             border-radius: 5px;
         }
 
         .team-info {
             display: flex;
             flex-direction: column;
-            gap: 3px;
+            gap: 2px;
+            flex-grow: 1;
         }
 
         .team-name {
             font-weight: 600;
-            font-size: 1em;
+            font-size: 0.95em;
         }
 
         .team-record {
-            font-size: 0.85em;
+            font-size: 0.8em;
             color: #666;
+        }
+
+        .team-link {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 1.2em;
+            padding: 0 10px;
+            opacity: 0.7;
+            transition: all 0.2s ease;
+        }
+
+        .team-link:hover {
+            opacity: 1;
+            transform: scale(1.2);
+        }
+
+        .sports-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .sports-buttons .quick-link-btn {
+            flex: 1;
         }
 
         body.dark-mode .team-name {
@@ -475,6 +501,10 @@
 
         body.dark-mode .team-record {
             color: #999;
+        }
+
+        body.dark-mode .team-link {
+            color: #9bb5ff;
         }
 
         body.dark-mode .notes-textarea {
@@ -1028,33 +1058,49 @@
             </div>
 
             <div class="widget-card">
-                <h3 class="widget-title">🏆 Pittsburgh Sports</h3>
+                <h3 class="widget-title">🏆 Sports Teams</h3>
                 <div class="sports-scores" id="sportsScores">
                     <div class="team-score">
                         <img src="https://www.google.com/s2/favicons?domain=steelers.com&sz=32" class="team-icon" alt="Steelers">
                         <div class="team-info">
                             <span class="team-name">Steelers</span>
-                            <span class="team-record" id="steelersRecord">Loading...</span>
+                            <span class="team-record" id="steelersRecord">NFL</span>
                         </div>
+                        <a href="https://www.espn.com/nfl/team/_/name/pit/pittsburgh-steelers" target="_blank" class="team-link">→</a>
                     </div>
                     <div class="team-score">
                         <img src="https://www.google.com/s2/favicons?domain=nhl.com&sz=32" class="team-icon" alt="Penguins">
                         <div class="team-info">
                             <span class="team-name">Penguins</span>
-                            <span class="team-record" id="penguinsRecord">Loading...</span>
+                            <span class="team-record" id="penguinsRecord">NHL</span>
                         </div>
+                        <a href="https://www.espn.com/nhl/team/_/name/pit/pittsburgh-penguins" target="_blank" class="team-link">→</a>
                     </div>
                     <div class="team-score">
                         <img src="https://www.google.com/s2/favicons?domain=mlb.com&sz=32" class="team-icon" alt="Pirates">
                         <div class="team-info">
                             <span class="team-name">Pirates</span>
-                            <span class="team-record" id="piratesRecord">Loading...</span>
+                            <span class="team-record" id="piratesRecord">MLB</span>
                         </div>
+                        <a href="https://www.espn.com/mlb/team/_/name/pit/pittsburgh-pirates" target="_blank" class="team-link">→</a>
+                    </div>
+                    <div class="team-score">
+                        <img src="https://www.google.com/s2/favicons?domain=chelseafc.com&sz=32" class="team-icon" alt="Chelsea">
+                        <div class="team-info">
+                            <span class="team-name">Chelsea FC</span>
+                            <span class="team-record" id="chelseaRecord">Premier League</span>
+                        </div>
+                        <a href="https://www.chelseafc.com/en" target="_blank" class="team-link">→</a>
                     </div>
                 </div>
-                <button class="quick-link-btn" style="margin-top: 15px; width: 100%;" onclick="window.open('https://www.espn.com/nfl/team/_/name/pit/pittsburgh-steelers', '_blank')">
-                    View Full Scores on ESPN
-                </button>
+                <div class="sports-buttons">
+                    <button class="quick-link-btn" onclick="window.open('https://www.thescore.com', '_blank')">
+                        theScore
+                    </button>
+                    <button class="quick-link-btn" onclick="window.open('https://www.espn.com', '_blank')">
+                        ESPN
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -1134,10 +1180,11 @@
         // Sports Scores (Mock data - you'd need an API for real scores)
         function loadSportsScores() {
             // These would come from an ESPN API or similar
-            // For now, showing placeholder data
-            document.getElementById('steelersRecord').textContent = 'Next: Sun vs Ravens';
-            document.getElementById('penguinsRecord').textContent = '28-15-5 (3rd Metro)';
-            document.getElementById('piratesRecord').textContent = 'Season starts April 2025';
+            // For now, showing league/status
+            document.getElementById('steelersRecord').textContent = 'AFC North';
+            document.getElementById('penguinsRecord').textContent = 'Metropolitan Div';
+            document.getElementById('piratesRecord').textContent = 'NL Central';
+            document.getElementById('chelseaRecord').textContent = 'Premier League';
         }
 
         loadSportsScores();
