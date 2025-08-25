@@ -1293,41 +1293,281 @@
             }, 500);
         });
 
-        // theScore Manual Updates - Just edit these games!
-        function updateSportsScores() {
+        // theScore Live Updates using API-Sports
+        async function updateSportsScores() {
             const gamesContainer = document.querySelector('.games-list');
             if (!gamesContainer) return;
             
-            // ⚡ EDIT THESE GAMES - Just change the values below!
-            // Status examples: "Final", "Live - 2nd", "Sat 1/4 @ 7:00 PM"
-            // Use "--" for no score (upcoming games)
+            gamesContainer.innerHTML = '<div class="loading">Loading scores...</div>';
+            
+            const apiKey = 'ce7101056c3ac273e9bea70115c46542';
+            const allGames = [];
+            
+            // Team configurations
+            const teams = [
+                { name: 'Chelsea', id: 49, sport: 'soccer', api: 'https://v3.football.api-sports.io' },
+                { name: 'Penguins', id: 696, sport: 'hockey', api: 'https://v1.hockey.api-sports.io' },
+                { name: 'Steelers', id: 22, sport: 'nfl', api: 'https://v1.american-football.api-sports.io' },
+                { name: 'Pirates', id: 28, sport: 'baseball', api: 'https://v1.baseball.api-sports.io' },
+                { name: 'Ohio Football', id: 168, sport: 'ncaaf', api: 'https://v1.american-football.api-sports.io' },
+                { name: 'Ohio Basketball', id: 2057, sport: 'ncaab', api: 'https://v2.nba.api-sports.io' }
+            ];
+            
+            try {
+                // Get current date
+                const today = new Date().toISOString().split('T')[0];
+                const currentYear = new Date().getFullYear();
+                
+                // Fetch data for each team
+                for (const team of teams) {
+                    try {
+                        let endpoint = '';
+                        let params = '';
+                        
+                        // Configure endpoint based on sport
+                        if (team.sport === 'soccer') {
+                            // Get Chelsea fixtures
+                            endpoint = `${team.api}/fixtures?team=${team.id}&last=1`;
+                            const nextEndpoint = `${team.api}/fixtures?team=${team.id}&next=1`;
+                            
+                            // Get last game
+                            const lastResponse = await fetch(endpoint, {
+                                headers: { 'x-apisports-key': apiKey }
+                            });
+                            
+                            if (lastResponse.ok) {
+                                const lastData = await lastResponse.json();
+                                if (lastData.response && lastData.response[0]) {
+                                    const game = lastData.response[0];
+                                    const homeTeam = game.teams.home.name.includes('Chelsea') ? 'CHE' : game.teams.home.name.substring(0, 3).toUpperCase();
+                                    const awayTeam = game.teams.away.name.includes('Chelsea') ? 'CHE' : game.teams.away.name.substring(0, 3).toUpperCase();
+                                    
+                                    allGames.push({
+                                        date: new Date(game.fixture.date),
+                                        status: 'Final',
+                                        team1: awayTeam,
+                                        score1: game.goals.away !== null ? String(game.goals.away) : '--',
+                                        team2: homeTeam,
+                                        score2: game.goals.home !== null ? String(game.goals.home) : '--'
+                                    });
+                                }
+                            }
+                            
+                            // Get next game
+                            const nextResponse = await fetch(nextEndpoint, {
+                                headers: { 'x-apisports-key': apiKey }
+                            });
+                            
+                            if (nextResponse.ok) {
+                                const nextData = await nextResponse.json();
+                                if (nextData.response && nextData.response[0]) {
+                                    const game = nextData.response[0];
+                                    const gameDate = new Date(game.fixture.date);
+                                    const homeTeam = game.teams.home.name.includes('Chelsea') ? 'CHE' : game.teams.home.name.substring(0, 3).toUpperCase();
+                                    const awayTeam = game.teams.away.name.includes('Chelsea') ? 'CHE' : game.teams.away.name.substring(0, 3).toUpperCase();
+                                    
+                                    allGames.push({
+                                        date: gameDate,
+                                        status: gameDate.toLocaleDateString('en-US', { weekday: 'short', month: 'numeric', day: 'numeric' }) + 
+                                                ' @ ' + gameDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
+                                        team1: awayTeam,
+                                        score1: '--',
+                                        team2: homeTeam,
+                                        score2: '--'
+                                    });
+                                }
+                            }
+                            
+                        } else if (team.sport === 'hockey') {
+                            // Get Penguins games
+                            endpoint = `${team.api}/games?team=${team.id}&season=${currentYear}&last=1`;
+                            
+                            const response = await fetch(endpoint, {
+                                headers: { 'x-apisports-key': apiKey }
+                            });
+                            
+                            if (response.ok) {
+                                const data = await response.json();
+                                if (data.response && data.response[0]) {
+                                    const game = data.response[0];
+                                    const homeTeam = game.teams.home.name.includes('Pittsburgh') ? 'PIT' : game.teams.home.name.substring(0, 3).toUpperCase();
+                                    const awayTeam = game.teams.away.name.includes('Pittsburgh') ? 'PIT' : game.teams.away.name.substring(0, 3).toUpperCase();
+                                    
+                                    allGames.push({
+                                        date: new Date(game.date),
+                                        status: game.status.long === 'Finished' ? 'Final' : game.status.long,
+                                        team1: awayTeam,
+                                        score1: game.scores.away !== null ? String(game.scores.away) : '--',
+                                        team2: homeTeam,
+                                        score2: game.scores.home !== null ? String(game.scores.home) : '--'
+                                    });
+                                }
+                            }
+                            
+                        } else if (team.sport === 'nfl' || team.sport === 'ncaaf') {
+                            // Get Football games (NFL and NCAA)
+                            const season = team.sport === 'nfl' ? currentYear : currentYear;
+                            endpoint = `${team.api}/games?team=${team.id}&season=${season}&last=1`;
+                            
+                            const response = await fetch(endpoint, {
+                                headers: { 'x-apisports-key': apiKey }
+                            });
+                            
+                            if (response.ok) {
+                                const data = await response.json();
+                                if (data.response && data.response[0]) {
+                                    const game = data.response[0];
+                                    let homeTeam, awayTeam;
+                                    
+                                    if (team.sport === 'nfl') {
+                                        homeTeam = game.teams.home.name.includes('Pittsburgh') ? 'PIT' : game.teams.home.name.substring(0, 3).toUpperCase();
+                                        awayTeam = game.teams.away.name.includes('Pittsburgh') ? 'PIT' : game.teams.away.name.substring(0, 3).toUpperCase();
+                                    } else {
+                                        homeTeam = game.teams.home.name.includes('Ohio') ? 'OHIO' : game.teams.home.name.substring(0, 3).toUpperCase();
+                                        awayTeam = game.teams.away.name.includes('Ohio') ? 'OHIO' : game.teams.away.name.substring(0, 3).toUpperCase();
+                                    }
+                                    
+                                    allGames.push({
+                                        date: new Date(game.game.date.date),
+                                        status: game.game.status.long === 'Finished' ? 'Final' : game.game.status.long,
+                                        team1: awayTeam,
+                                        score1: game.scores.away.total !== null ? String(game.scores.away.total) : '--',
+                                        team2: homeTeam,
+                                        score2: game.scores.home.total !== null ? String(game.scores.home.total) : '--'
+                                    });
+                                }
+                            }
+                            
+                        } else if (team.sport === 'baseball') {
+                            // Get Pirates games
+                            endpoint = `${team.api}/games?team=${team.id}&season=${currentYear}&last=1`;
+                            
+                            const response = await fetch(endpoint, {
+                                headers: { 'x-apisports-key': apiKey }
+                            });
+                            
+                            if (response.ok) {
+                                const data = await response.json();
+                                if (data.response && data.response[0]) {
+                                    const game = data.response[0];
+                                    const homeTeam = game.teams.home.name.includes('Pittsburgh') ? 'PIT' : game.teams.home.name.substring(0, 3).toUpperCase();
+                                    const awayTeam = game.teams.away.name.includes('Pittsburgh') ? 'PIT' : game.teams.away.name.substring(0, 3).toUpperCase();
+                                    
+                                    allGames.push({
+                                        date: new Date(game.date),
+                                        status: game.status.long === 'Finished' ? 'Final' : game.status.long,
+                                        team1: awayTeam,
+                                        score1: game.scores.away.total !== null ? String(game.scores.away.total) : '--',
+                                        team2: homeTeam,
+                                        score2: game.scores.home.total !== null ? String(game.scores.home.total) : '--'
+                                    });
+                                }
+                            }
+                            
+                        } else if (team.sport === 'ncaab') {
+                            // Get Ohio Basketball games
+                            endpoint = `${team.api}/games?team=${team.id}&season=${currentYear}&last=1`;
+                            
+                            const response = await fetch(endpoint, {
+                                headers: { 'x-apisports-key': apiKey }
+                            });
+                            
+                            if (response.ok) {
+                                const data = await response.json();
+                                if (data.response && data.response[0]) {
+                                    const game = data.response[0];
+                                    const homeTeam = game.teams.home.name.includes('Ohio') ? 'OHIO' : game.teams.home.nickname.substring(0, 3).toUpperCase();
+                                    const awayTeam = game.teams.away.name.includes('Ohio') ? 'OHIO' : game.teams.away.nickname.substring(0, 3).toUpperCase();
+                                    
+                                    allGames.push({
+                                        date: new Date(game.date),
+                                        status: game.status.long === 'Finished' ? 'Final' : game.status.long,
+                                        team1: awayTeam,
+                                        score1: game.scores.away.total !== null ? String(game.scores.away.total) : '--',
+                                        team2: homeTeam,
+                                        score2: game.scores.home.total !== null ? String(game.scores.home.total) : '--'
+                                    });
+                                }
+                            }
+                        }
+                        
+                    } catch (teamError) {
+                        console.log(`Error fetching ${team.name}:`, teamError);
+                    }
+                }
+                
+                // Sort games by date and display
+                allGames.sort((a, b) => a.date - b.date);
+                
+                if (allGames.length > 0) {
+                    gamesContainer.innerHTML = '';
+                    allGames.slice(0, 4).forEach(game => {
+                        // Determine winners
+                        const score1Num = parseInt(game.score1);
+                        const score2Num = parseInt(game.score2);
+                        const isWinner1 = !isNaN(score1Num) && !isNaN(score2Num) && score1Num > score2Num;
+                        const isWinner2 = !isNaN(score1Num) && !isNaN(score2Num) && score2Num > score1Num;
+                        
+                        const gameCard = document.createElement('div');
+                        gameCard.className = 'game-card';
+                        gameCard.innerHTML = `
+                            <div class="game-status">${game.status}</div>
+                            <div class="game-teams">
+                                <div class="team-row">
+                                    <span class="team-abbr">${game.team1}</span>
+                                    <span class="team-score ${isWinner1 ? 'winner' : ''}">${game.score1}</span>
+                                </div>
+                                <div class="team-row">
+                                    <span class="team-abbr">${game.team2}</span>
+                                    <span class="team-score ${isWinner2 ? 'winner' : ''}">${game.score2}</span>
+                                </div>
+                            </div>
+                        `;
+                        gamesContainer.appendChild(gameCard);
+                    });
+                } else {
+                    // If no games found, show manual fallback
+                    updateManualScores();
+                }
+                
+            } catch (error) {
+                console.error('API-Sports error:', error);
+                // Fall back to manual scores
+                updateManualScores();
+            }
+        }
+        
+        // Manual fallback function
+        function updateManualScores() {
+            const gamesContainer = document.querySelector('.games-list');
+            if (!gamesContainer) return;
+            
+            // Manual backup scores - update these as needed
             const games = [
                 {
                     status: "Final",
-                    team1: "PIT", score1: "24",
-                    team2: "BAL", score2: "17"
+                    team1: "PIT", score1: "3",
+                    team2: "NYR", score2: "2"
                 },
                 {
-                    status: "Tonight @ 7:00 PM",
+                    status: "Sat @ 7:00 PM",
                     team1: "PIT", score1: "--",
-                    team2: "NYR", score2: "--"
+                    team2: "BUF", score2: "--"
                 },
                 {
-                    status: "Sat 1/4 @ 10:00 AM",
+                    status: "Sun @ 1:00 PM",
                     team1: "CHE", score1: "--",
                     team2: "LIV", score2: "--"
                 },
                 {
-                    status: "Sun 1/5 @ 1:00 PM",
-                    team1: "PIT", score1: "--",
-                    team2: "CIN", score2: "--"
+                    status: "Next Week",
+                    team1: "OHIO", score1: "--",
+                    team2: "KENT", score2: "--"
                 }
             ];
             
-            // Display the games
             gamesContainer.innerHTML = '';
             games.forEach(game => {
-                // Determine winner (if game is final)
                 const score1Num = parseInt(game.score1);
                 const score2Num = parseInt(game.score2);
                 const isWinner1 = !isNaN(score1Num) && !isNaN(score2Num) && score1Num > score2Num;
@@ -1354,6 +1594,9 @@
 
         // Load scores on page load
         updateSportsScores();
+        
+        // Update scores every 3 hours
+        setInterval(updateSportsScores, 10800000);
         function updateClocks() {
             const now = new Date();
             
