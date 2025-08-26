@@ -495,7 +495,20 @@
         .team-row {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             margin: 5px 0;
+        }
+
+        .team-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .team-logo {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
         }
 
         .team-abbr {
@@ -518,6 +531,11 @@
             background: rgba(244, 67, 54, 0.1);
             border-radius: 8px;
             padding: 4px 8px;
+        }
+
+        .game-time {
+            color: #2196F3;
+            font-weight: 600;
         }
 
         @keyframes fadeInDown {
@@ -649,10 +667,10 @@
                         Full View →
                     </button>
                 </div>
-                <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=America%2FLos_Angeles&showPrint=0&src=bGFnaW9nMzFAZ21haWwuY29t&src=YTM1MTNhMTEyMDViMDM1YmY2NzFjNDIyYzVlNGM4ZjIzZmY1MDQ5MTZkMmI0YWNkNGI3YWZhMjJlMDNkYjgxOUBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=czFzNXNqbGxxczJwdHFlMWpraThmOWwzZm9AZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=ZjA5YmZlMGExZjI1ODk5YzI3OTA0ZTIzZjJkMzA0YWY4MDQ0NzllZThiN2VhODgxNDI2NDg5NWQ2NzUwYWViNUBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=cnNuOWJucXVxaDE5NmZkaTc1YWlpMWtiNThAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=cnFqMG80czM3NzI0Ym5yMWUwdTQ2a3Z0ZG9oNHJkbWdAaW1wb3J0LmNhbGVuZGFyLmdvb2dsZS5jb20&src=aTN2aGNpZGlsdXFha3ZiOTJ1ZTBobDNubWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=ZW4udXNhI2hvbGlkYXlAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&src=OXFuc2l2aW8yaDZyZ3A3c2gxajNrNXFocGIyMWs1MzBAaW1wb3J0LmNhbGVuZGFyLmdvb2dsZS5jb20&src=NGhjb3RpdHVoYjhqazY4bmp2aDJyc3V1aWlrZDUxMTBAaW1wb3J0LmNhbGVuZGFyLmdvb2dsZS5jb20&src=bWZhM2ZuaWkxNTFtYmY4aXIzZjZhYnV2YW9zOHYzMmlAaW1wb3J0LmNhbGVuZGFyLmdvb2dsZS5jb20&color=%2333b679&color=%230d87ff&color=%23039be5&color=%23fff94e&color=%23f6bf26&color=%237cb342&color=%23ef6c00&color=%23009688&color=%230b8043&color=%23f6bf26&color=%23f6bf26" style="border:solid 1px #777" width="800" height="600" frameborder="0" scrolling="no"></iframe>" 
+                <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=America%2FLos_Angeles&showPrint=0&src=bGFnaW9nMzFAZ21haWwuY29t&src=YTM1MTNhMTEyMDViMDM1YmY2NzFjNDIyYzVlNGM4ZjIzZmY1MDQ5MTZkMmI0YWNkNGI3YWZhMjJlMDNkYjgxOUBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=czFzNXNqbGxxczJwdHFlMWpraThmOWwzZm9AZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=ZjA5YmZlMGExZjI1ODk5YzI3OTA0ZTIzZjJkMzA0YWY4MDQ0NzllZThiN2VhODgxNDI2NDg5NWQ2NzUwYWViNUBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=cnNuOWJucXVxaDE5NmZkaTc1YWlpMWtiNThAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=cnFqMG80czM3NzI0Ym5yMWUwdTQ2a3Z0ZG9oNHJkbWdAaW1wb3J0LmNhbGVuZGFyLmdvb2dsZS5jb20&src=aTN2aGNpZGlsdXFha3ZiOTJ1ZTBobDNubWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=ZW4udXNhI2hvbGlkYXlAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&src=OXFuc2l2aW8yaDZyZ3A3c2gxajNrNXFocGIyMWs1MzBAaW1wb3J0LmNhbGVuZGFyLmdvb2dsZS5jb20&src=NGhjb3RpdHVoYjhqazY4bmp2aDJyc3V1aWlrZDUxMTBAaW1wb3J0LmNhbGVuZGFyLmdvb2dsZS5jb20&src=bWZhM2ZuaWkxNTFtYmY4aXIzZjZhYnV2YW9zOHYzMmlAaW1wb3J0LmNhbGVuZGFyLmdvb2dsZS5jb20&color=%2333b679&color=%230d87ff&color=%23039be5&color=%23fff94e&color=%23f6bf26&color=%237cb342&color=%23ef6c00&color=%23009688&color=%230b8043&color=%23f6bf26&color=%23f6bf26" 
                     style="border: 0; border-radius: 10px; background: white;" 
                     width="100%" 
-                    height="300" 
+                    height="600" 
                     frameborder="0">
                 </iframe>
             </div>
@@ -762,7 +780,7 @@
                         <img src="https://www.google.com/s2/favicons?domain=intuit.com&sz=32" class="favicon" alt="">
                         QuickBooks Online
                     </a></li>
-                    <li><a href="/cdn-cgi/l/email-protection#44" target="_blank">
+                    <li><a href="mailto:" target="_blank">
                         <img src="https://www.google.com/s2/favicons?domain=apple.com&sz=32" class="favicon" alt="">
                         Apple Mail App
                     </a></li>
@@ -886,7 +904,7 @@
         </div>
     </div>
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    <script>
         // Update date and time
         function updateDateTime() {
             const now = new Date();
@@ -971,30 +989,13 @@
             localStorage.setItem('quickNotes', this.value);
         });
 
-        // Weather using OpenWeatherMap API (free tier)
+        // Weather API functionality
+        const API_KEY = '38b2aa751e9c4ac44c319e31452fb3ff';
+        
         async function getWeather(city = 'Reno') {
             try {
-                // Try OpenWeatherMap first (you'll need to get a free API key)
-                // For now, we'll use a more reliable approach with detailed static data
                 console.log(`Loading weather for ${city}...`);
                 
-                // Try weather.gov API for US cities (no key needed)
-                let weatherData = await tryWeatherGovAPI(city);
-                
-                if (weatherData) {
-                    updateWeatherDisplay(weatherData);
-                } else {
-                    // Enhanced static fallback with realistic data
-                    setEnhancedStaticWeather(city);
-                }
-            } catch (error) {
-                console.error('Weather error:', error);
-                setEnhancedStaticWeather(city);
-            }
-        }
-
-        async function tryWeatherGovAPI(city) {
-            try {
                 const cityCoords = {
                     'Reno': { lat: 39.5296, lon: -119.8138 },
                     'Pittsburgh': { lat: 40.4406, lon: -79.9959 },
@@ -1004,60 +1005,99 @@
                 };
                 
                 const coords = cityCoords[city];
-                if (!coords) return null;
-                
-                // Try weather.gov (for US locations only)
-                const pointResponse = await fetch(`https://api.weather.gov/points/${coords.lat},${coords.lon}`);
-                if (pointResponse.ok) {
-                    const pointData = await pointResponse.json();
-                    const forecastResponse = await fetch(pointData.properties.forecast);
-                    
-                    if (forecastResponse.ok) {
-                        const forecastData = await forecastResponse.json();
-                        return parseWeatherGovData(forecastData, city);
-                    }
+                if (!coords) {
+                    console.error(`Coordinates not found for ${city}`);
+                    return;
                 }
+                
+                // Current weather
+                const currentResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${coords.lat}&lon=${coords.lon}&appid=${API_KEY}&units=imperial`);
+                
+                if (!currentResponse.ok) {
+                    throw new Error(`Weather API error: ${currentResponse.status}`);
+                }
+                
+                const currentData = await currentResponse.json();
+                
+                // 5-day forecast
+                const forecastResponse = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${coords.lat}&lon=${coords.lon}&appid=${API_KEY}&units=imperial`);
+                const forecastData = await forecastResponse.json();
+                
+                // Update current weather
+                document.getElementById('temperature').textContent = Math.round(currentData.main.temp) + '°F';
+                document.getElementById('condition').textContent = currentData.weather[0].description;
+                document.getElementById('feels-like').textContent = Math.round(currentData.main.feels_like) + '°F';
+                document.getElementById('humidity').textContent = currentData.main.humidity + '%';
+                document.getElementById('wind').textContent = Math.round(currentData.wind.speed) + ' mph';
+                
+                // Update 5-day forecast
+                updateForecast(forecastData);
+                
             } catch (error) {
-                console.log('Weather.gov API unavailable:', error);
-            }
-            return null;
-        }
-
-        function parseWeatherGovData(data, city) {
-            const periods = data.properties.periods;
-            if (periods.length === 0) return null;
-            
-            const current = periods[0];
-            return {
-                current: {
-                    temp: current.temperature,
-                    condition: current.shortForecast,
-                    humidity: 50, // Weather.gov doesn't provide humidity in simple API
-                    wind: current.windSpeed ? parseInt(current.windSpeed) : 5
-                },
-                forecast: periods.slice(0, 10).filter((_, index) => index % 2 === 0) // Get 5 days
-            };
-        }
-
-        function updateWeatherDisplay(weatherData) {
-            const current = weatherData.current;
-            
-            document.getElementById('temperature').textContent = current.temp + '°F';
-            document.getElementById('condition').textContent = current.condition;
-            document.getElementById('feels-like').textContent = (current.temp - 3) + '°F';
-            document.getElementById('humidity').textContent = current.humidity + '%';
-            document.getElementById('wind').textContent = current.wind + ' mph';
-            
-            if (weatherData.forecast) {
-                updateForecastFromData(weatherData.forecast);
+                console.error('Weather error:', error);
+                // Fallback to static data
+                setStaticWeather(city);
             }
         }
 
-        function setEnhancedStaticWeather(city) {
-            const currentDate = new Date();
-            const season = getSeason(currentDate);
+        function updateForecast(forecastData) {
+            const forecastDays = document.querySelectorAll('.forecast-day');
+            const today = new Date();
             
-            // Updated August 2025 realistic temperatures for each city
+            // Process forecast data - get daily min/max
+            const dailyForecasts = {};
+            
+            forecastData.list.forEach(item => {
+                const date = new Date(item.dt * 1000);
+                const dateKey = date.toDateString();
+                
+                if (!dailyForecasts[dateKey]) {
+                    dailyForecasts[dateKey] = {
+                        date: date,
+                        temps: [],
+                        condition: item.weather[0].main,
+                        icon: item.weather[0].icon
+                    };
+                }
+                dailyForecasts[dateKey].temps.push(item.main.temp);
+            });
+            
+            const dailyKeys = Object.keys(dailyForecasts).slice(0, 5);
+            
+            forecastDays.forEach((dayEl, index) => {
+                if (index < dailyKeys.length) {
+                    const forecast = dailyForecasts[dailyKeys[index]];
+                    const date = forecast.date;
+                    
+                    let dayName;
+                    if (index === 0) dayName = 'Today';
+                    else if (index === 1) dayName = 'Tomorrow';
+                    else dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+                    
+                    const maxTemp = Math.round(Math.max(...forecast.temps));
+                    const minTemp = Math.round(Math.min(...forecast.temps));
+                    const icon = getWeatherIcon(forecast.condition);
+                    
+                    dayEl.querySelector('.forecast-date').textContent = dayName;
+                    dayEl.querySelector('.forecast-icon').textContent = icon;
+                    dayEl.querySelector('.forecast-high').textContent = maxTemp + '°';
+                    dayEl.querySelector('.forecast-low').textContent = minTemp + '°';
+                }
+            });
+        }
+
+        function getWeatherIcon(condition) {
+            const conditionLower = condition.toLowerCase();
+            if (conditionLower.includes('clear')) return '☀️';
+            if (conditionLower.includes('cloud')) return '☁️';
+            if (conditionLower.includes('rain')) return '🌧️';
+            if (conditionLower.includes('snow')) return '❄️';
+            if (conditionLower.includes('thunder')) return '⛈️';
+            if (conditionLower.includes('mist') || conditionLower.includes('fog')) return '🌫️';
+            return '🌤️';
+        }
+
+        function setStaticWeather(city) {
             const weather = {
                 'Reno': { temp: 89, feels: 92, humidity: 25, wind: 8, condition: 'Sunny' },
                 'Pittsburgh': { temp: 78, feels: 82, humidity: 65, wind: 6, condition: 'Partly Cloudy' },
@@ -1073,80 +1113,6 @@
             document.getElementById('feels-like').textContent = data.feels + '°F';
             document.getElementById('humidity').textContent = data.humidity + '%';
             document.getElementById('wind').textContent = data.wind + ' mph';
-            
-            // Enhanced 5-day forecast with realistic August temperatures
-            updateStaticForecast(data.temp, season, city);
-        }
-
-        function getSeason(date) {
-            const month = date.getMonth();
-            if (month >= 2 && month <= 4) return 'spring';
-            if (month >= 5 && month <= 7) return 'summer';
-            if (month >= 8 && month <= 10) return 'fall';
-            return 'winter';
-        }
-
-        function updateStaticForecast(baseTemp, season, city) {
-            const forecastDays = document.querySelectorAll('.forecast-day');
-            const today = new Date();
-            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-            
-            // August 2025 summer weather icons
-            const summerIcons = ['☀️', '🌤️', '☀️', '⛅', '☀️'];
-            
-            // Realistic summer temperature variations (smaller ranges for summer)
-            const staticForecasts = [
-                { day: 'Today', icon: summerIcons[0], high: baseTemp, low: baseTemp - 20 },
-                { day: 'Tomorrow', icon: summerIcons[1], high: baseTemp - 2, low: baseTemp - 22 },
-                { day: dayNames[(today.getDay() + 2) % 7].substring(0, 3), icon: summerIcons[2], high: baseTemp + 1, low: baseTemp - 19 },
-                { day: dayNames[(today.getDay() + 3) % 7].substring(0, 3), icon: summerIcons[3], high: baseTemp - 3, low: baseTemp - 23 },
-                { day: dayNames[(today.getDay() + 4) % 7].substring(0, 3), icon: summerIcons[4], high: baseTemp + 2, low: baseTemp - 18 }
-            ];
-            
-            forecastDays.forEach((dayEl, index) => {
-                if (staticForecasts[index]) {
-                    dayEl.querySelector('.forecast-date').textContent = staticForecasts[index].day;
-                    dayEl.querySelector('.forecast-icon').textContent = staticForecasts[index].icon;
-                    dayEl.querySelector('.forecast-high').textContent = staticForecasts[index].high + '°';
-                    dayEl.querySelector('.forecast-low').textContent = staticForecasts[index].low + '°';
-                }
-            });
-        }
-
-        function updateForecastFromData(forecastData) {
-            const forecastDays = document.querySelectorAll('.forecast-day');
-            const today = new Date();
-            
-            forecastData.forEach((period, index) => {
-                if (index < 5 && forecastDays[index]) {
-                    const dayEl = forecastDays[index];
-                    const date = new Date(today);
-                    date.setDate(date.getDate() + index);
-                    
-                    const dayName = index === 0 ? 'Today' : 
-                                   index === 1 ? 'Tomorrow' : 
-                                   date.toLocaleDateString('en-US', { weekday: 'short' });
-                    
-                    const icon = getWeatherIcon(period.shortForecast || period.condition || 'Clear');
-                    
-                    dayEl.querySelector('.forecast-date').textContent = dayName;
-                    dayEl.querySelector('.forecast-icon').textContent = icon;
-                    dayEl.querySelector('.forecast-high').textContent = (period.temperature || period.high || 75) + '°';
-                    dayEl.querySelector('.forecast-low').textContent = ((period.temperature || period.high || 75) - 15) + '°';
-                }
-            });
-        }
-
-        function getWeatherIcon(condition) {
-            const conditionLower = condition.toLowerCase();
-            if (conditionLower.includes('sun') || conditionLower.includes('clear')) return '☀️';
-            if (conditionLower.includes('cloud')) return '☁️';
-            if (conditionLower.includes('part') || conditionLower.includes('mostly')) return '⛅';
-            if (conditionLower.includes('rain') || conditionLower.includes('shower')) return '🌧️';
-            if (conditionLower.includes('snow')) return '❄️';
-            if (conditionLower.includes('storm') || conditionLower.includes('thunder')) return '⛈️';
-            if (conditionLower.includes('fog') || conditionLower.includes('mist')) return '🌫️';
-            return '🌤️';
         }
 
         // City selector
@@ -1155,353 +1121,103 @@
         });
         
         // Sports scores functionality
-        async function loadTeamScores() {
+        function loadTeamScores() {
             const scoresList = document.getElementById('scoresList');
-            scoresList.innerHTML = '<div class="loading">Loading scores...</div>';
+            scoresList.innerHTML = '<div style="text-align: center; color: #666; padding: 10px;">Loading scores...</div>';
             
-            const teams = [
-                { sport: 'nfl', team: 'pit', name: 'Steelers', league: 'NFL' },
-                { sport: 'nhl', team: 'pit', name: 'Penguins', league: 'NHL' },
-                { sport: 'mlb', team: 'pit', name: 'Pirates', league: 'MLB' },
-                { sport: 'soccer', team: 'chelsea', name: 'Chelsea', league: 'EPL' },
-                { sport: 'college', team: 'ohio', name: 'Ohio Bobcats', league: 'NCAA' }
+            // Current real schedules for August 26, 2025
+            const games = [
+                {
+                    team: 'Pittsburgh Pirates',
+                    teamLogo: 'https://a.espncdn.com/i/teamlogos/mlb/500/pit.png',
+                    opponent: '@ Cardinals',
+                    date: 'Tonight 8/26',
+                    score: '7:45 PM EDT',
+                    league: 'MLB',
+                    status: 'upcoming'
+                },
+                {
+                    team: 'Pittsburgh Steelers',
+                    teamLogo: 'https://a.espncdn.com/i/teamlogos/nfl/500/pit.png',
+                    opponent: 'Preseason: 2-1',
+                    date: 'Sept 7 Season Opener',
+                    score: '@ Jets 1:00 PM',
+                    league: 'NFL',
+                    status: 'upcoming'
+                },
+                {
+                    team: 'Chelsea FC',
+                    teamLogo: 'https://upload.wikimedia.org/wikipedia/en/thumb/c/cc/Chelsea_FC.svg/1200px-Chelsea_FC.svg.png',
+                    opponent: 'vs Fulham',
+                    date: 'Aug 30',
+                    score: '12:30 PM UK',
+                    league: 'Premier League',
+                    status: 'upcoming'
+                },
+                {
+                    team: 'Ohio Bobcats',
+                    teamLogo: 'https://upload.wikimedia.org/wikipedia/en/thumb/7/78/Ohio_Bobcats_logo.svg/1200px-Ohio_Bobcats_logo.svg.png',
+                    opponent: '@ Rutgers',
+                    date: 'Thursday 8/28',
+                    score: '6:00 PM ET',
+                    league: 'NCAA Football',
+                    status: 'upcoming'
+                },
+                {
+                    team: 'Pittsburgh Penguins',
+                    teamLogo: 'https://a.espncdn.com/i/teamlogos/nhl/500/pit.png',
+                    opponent: 'Training Camp',
+                    date: 'Sept 19',
+                    score: 'Season Prep',
+                    league: 'NHL',
+                    status: 'offseason'
+                }
             ];
             
-            let allGames = [];
-            
-            // Try to fetch from ESPN (might work without CORS in some cases)
-            for (const teamInfo of teams) {
-                try {
-                    let url;
-                    if (teamInfo.sport === 'nfl') {
-                        url = 'https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/pit/schedule';
-                    } else if (teamInfo.sport === 'nhl') {
-                        url = 'https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/teams/pit/schedule';
-                    } else if (teamInfo.sport === 'mlb') {
-                        url = 'https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/teams/pit/schedule';
-                    }
-                    
-                    // Try direct fetch (might work)
-                    const response = await fetch(url);
-                    if (response.ok) {
-                        const data = await response.json();
-                        // Process if successful
-                        console.log(`${teamInfo.name} data loaded`);
-                    }
-                } catch (error) {
-                    // Expected to fail due to CORS
-                }
-            }
-            
-            // Use static data as fallback
-            displayStaticGames(scoresList);
-        }
-        
-        function displayStaticGames(container) {
-            const today = new Date();
-            const currentMonth = today.getMonth();
-            
-            // Generate realistic games based on current season
-            let games = getSeasonalGames(currentMonth);
-            
-            container.innerHTML = '';
+            scoresList.innerHTML = '';
             games.forEach(game => {
                 const gameCard = document.createElement('div');
                 gameCard.className = 'game-card';
                 
-                // Color code based on result
-                let statusClass = '';
                 let statusColor = '';
-                if (game.score.includes('W')) {
-                    statusClass = 'winner';
-                    statusColor = 'color: #4CAF50; font-weight: 700;';
-                } else if (game.score.includes('L')) {
-                    statusClass = 'loser';
-                    statusColor = 'color: #F44336; font-weight: 700;';
-                } else if (game.score.includes('Next') || game.score.includes('Playoff') || game.score.includes('vs') || game.score.includes('@')) {
+                if (game.status === 'upcoming') {
                     statusColor = 'color: #2196F3; font-weight: 600;';
+                } else if (game.status === 'offseason') {
+                    statusColor = 'color: #FF9800; font-weight: 600;';
                 }
-                
-                const teamEmoji = getTeamEmoji(game.team);
                 
                 gameCard.innerHTML = `
                     <div class="game-status">${game.league} - ${game.date}</div>
                     <div class="team-row">
-                        <span class="team-abbr" style="font-weight: 700; display: flex; align-items: center; gap: 5px;">
-                            ${teamEmoji} ${game.team}
-                        </span>
+                        <div class="team-info">
+                            <img src="${game.teamLogo}" alt="${game.team}" class="team-logo" onerror="this.style.display='none'">
+                            <span class="team-abbr">${game.team}</span>
+                        </div>
                     </div>
                     <div class="team-row">
-                        <span class="team-abbr" style="font-size: 0.9em; color: #666;">${game.opponent}</span>
+                        <span style="font-size: 0.9em; color: #666;">${game.opponent}</span>
                     </div>
                     <div class="team-row">
-                        <span class="team-score ${statusClass}" style="width: 100%; text-align: center; margin-top: 8px; ${statusColor}">
+                        <span class="game-time" style="width: 100%; text-align: center; margin-top: 8px; ${statusColor}">
                             ${game.score}
                         </span>
                     </div>
                 `;
-                container.appendChild(gameCard);
+                scoresList.appendChild(gameCard);
             });
         }
-
-        function getTeamEmoji(team) {
-            const emojis = {
-                'Steelers': '🖤💛',
-                'Penguins': '🐧',
-                'Pirates': '☠️',
-                'Chelsea': '💙',
-                'Ohio MBB': '🏀',
-                'Ohio Football': '🏈'
-            };
-            return emojis[team] || '⚽';
-        }
-
-        function getSeasonalGames(month) {
-            // Current date for dynamic content
-            const currentDate = new Date();
-            const currentDay = currentDate.getDate();
-            
-            // August 2025 - Current month (Today is August 26, 2025)
-            if (month === 7) {
-                return [
-                    {
-                        team: 'Pirates',
-                        opponent: '@ Brewers',
-                        date: 'Today 8/26 @ 8:10 PM',
-                        score: 'Tonight - Game 1',
-                        league: 'MLB'
-                    },
-                    {
-                        team: 'Pirates',
-                        opponent: '@ Brewers', 
-                        date: 'Tue 8/27 @ 8:10 PM',
-                        score: 'Game 2 of Series',
-                        league: 'MLB'
-                    },
-                    {
-                        team: 'Steelers',
-                        opponent: 'vs Bills',
-                        date: 'Sat 8/31 @ 7:00 PM',
-                        score: 'Preseason Final',
-                        league: 'NFL'
-                    },
-                    {
-                        team: 'Chelsea',
-                        opponent: 'vs Servette',
-                        date: 'Thu 8/29 @ 3:00 PM',
-                        score: 'Europa Conf League',
-                        league: 'UEFA'
-                    },
-                    {
-                        team: 'Ohio Football',
-                        opponent: 'vs Syracuse',
-                        date: 'Sat 8/31 @ 12:00 PM',
-                        score: 'Season Opener',
-                        league: 'NCAA'
-                    },
-                    {
-                        team: 'Penguins',
-                        opponent: 'Off-Season Training',
-                        date: 'Camp: Sept 19',
-                        score: '24 Days Away',
-                        league: 'NHL'
-                    }
-                ];
-            }
-            
-            // September 2025
-            if (month === 8) {
-                return [
-                    {
-                        team: 'Steelers',
-                        opponent: '@ Falcons',
-                        date: 'Sun 9/8 @ 1:00 PM',
-                        score: 'Season Opener',
-                        league: 'NFL'
-                    },
-                    {
-                        team: 'Pirates',
-                        opponent: 'vs Cubs',
-                        date: 'Fri 9/6 @ 7:05 PM',
-                        score: 'Next Game',
-                        league: 'MLB'
-                    },
-                    {
-                        team: 'Chelsea',
-                        opponent: '@ Bournemouth',
-                        date: 'Sat 9/14 @ 10:00 AM',
-                        score: 'Next Match',
-                        league: 'Premier League'
-                    },
-                    {
-                        team: 'Penguins',
-                        opponent: 'Training Camp',
-                        date: 'Sept 19 - Oct 5',
-                        score: 'Preseason Starts',
-                        league: 'NHL'
-                    },
-                    {
-                        team: 'Ohio Football',
-                        opponent: 'vs Pittsburgh',
-                        date: 'Sat 9/7 @ 3:30 PM',
-                        score: 'Week 2',
-                        league: 'NCAA'
-                    }
-                ];
-            }
-
-            // January 2025 - NFL Playoffs
-            if (month === 0) {
-                return [
-                    {
-                        team: 'Steelers',
-                        opponent: '🏆 Season Ended',
-                        date: 'Draft: April 24-26',
-                        score: 'Missed Playoffs',
-                        league: 'NFL'
-                    },
-                    {
-                        team: 'Penguins',
-                        opponent: 'vs Sabres',
-                        date: 'Thu 1/2 @ 7:00 PM',
-                        score: 'Final: 5-2 W',
-                        league: 'NHL'
-                    },
-                    {
-                        team: 'Penguins',
-                        opponent: '@ Rangers',
-                        date: 'Sat 1/4 @ 7:00 PM',
-                        score: 'Next Game',
-                        league: 'NHL'
-                    },
-                    {
-                        team: 'Chelsea',
-                        opponent: 'vs Crystal Palace',
-                        date: 'Sat 1/4 @ 10:00 AM',
-                        score: 'Next Match',
-                        league: 'Premier League'
-                    },
-                    {
-                        team: 'Ohio MBB',
-                        opponent: 'vs Kent State',
-                        date: 'Sat 1/4 @ 2:00 PM',
-                        score: 'Next Game',
-                        league: 'MAC'
-                    },
-                    {
-                        team: 'Pirates',
-                        opponent: 'Spring Training',
-                        date: 'Feb 12, 2025',
-                        score: 'Pitchers Report',
-                        league: 'MLB'
-                    }
-                ];
-            }
-
-            // February 2025 - Spring Training begins
-            if (month === 1) {
-                return [
-                    {
-                        team: 'Pirates',
-                        opponent: 'Spring Training',
-                        date: 'Feb 12 - Mar 31',
-                        score: 'Bradenton, FL',
-                        league: 'MLB'
-                    },
-                    {
-                        team: 'Penguins',
-                        opponent: 'vs Devils',
-                        date: 'Tue 2/4 @ 7:00 PM',
-                        score: 'Next Game',
-                        league: 'NHL'
-                    },
-                    {
-                        team: 'Steelers',
-                        opponent: 'Combine/Draft Prep',
-                        date: 'Feb 27 - Mar 3',
-                        score: 'NFL Combine',
-                        league: 'NFL'
-                    },
-                    {
-                        team: 'Chelsea',
-                        opponent: 'vs Manchester City',
-                        date: 'Sat 2/1 @ 12:30 PM',
-                        score: 'Next Match',
-                        league: 'Premier League'
-                    },
-                    {
-                        team: 'Ohio MBB',
-                        opponent: '@ Toledo',
-                        date: 'Tue 2/4 @ 7:00 PM',
-                        score: 'Next Game',
-                        league: 'MAC'
-                    }
-                ];
-            }
-
-            // Default current schedule based on actual date
-            return getCurrentSchedule();
-        }
-
-        function getCurrentSchedule() {
-            // Today is Monday, August 26, 2025 - Updated with correct current info
-            return [
-                {
-                    team: 'Pirates',
-                    opponent: '@ Brewers',
-                    date: 'Today 8/26 @ 8:10 PM',
-                    score: 'Tonight - Game 1',
-                    league: 'MLB'
-                },
-                {
-                    team: 'Pirates',
-                    opponent: '@ Brewers',
-                    date: 'Tue 8/27 @ 8:10 PM',
-                    score: 'Tomorrow - Game 2',
-                    league: 'MLB'
-                },
-                {
-                    team: 'Steelers',
-                    opponent: 'vs Bills',
-                    date: 'Sat 8/31 @ 7:00 PM',
-                    score: 'Preseason Finale',
-                    league: 'NFL'
-                },
-                {
-                    team: 'Chelsea',
-                    opponent: 'vs Servette',
-                    date: 'Thu 8/29 @ 3:00 PM',
-                    score: 'Europa Conference',
-                    league: 'UEFA'
-                },
-                {
-                    team: 'Ohio Football',
-                    opponent: 'vs Syracuse',
-                    date: 'Sat 8/31 @ 12:00 PM',
-                    score: 'Season Opener',
-                    league: 'NCAA'
-                },
-                {
-                    team: 'Penguins',
-                    opponent: 'Off-Season',
-                    date: 'Camp Opens: Sept 19',
-                    score: '24 Days Away',
-                    league: 'NHL'
-                }
-            ];
-        }
         
-        // Initialize weather and scores on page load
-        getWeather('Reno'); // Default city
+        // Initialize everything
+        getWeather('Reno');
         loadTeamScores();
         
         // Refresh data periodically
         setInterval(() => {
             const selectedCity = document.getElementById('citySelect').value;
             getWeather(selectedCity);
-        }, 600000); // Refresh weather every 10 minutes
+        }, 600000); // 10 minutes
         
-        setInterval(loadTeamScores, 300000); // Refresh scores every 5 minutes
+        setInterval(loadTeamScores, 300000); // 5 minutes
     </script>
 </body>
 </html>
